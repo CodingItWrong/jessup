@@ -5,9 +5,15 @@
   "author": "Josh Justice <me@codingitwrong.com>",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^28.1.0"
+    "eslint": "^8.15.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^26.1.5",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^28.1.0",
+    "prettier": "^2.6.2"
   },
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "lint": "eslint ."
   }
 }
