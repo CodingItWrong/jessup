@@ -1,7 +1,7 @@
 {
   "name": "reactup",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "reactup.js",
   "author": "Josh Justice <me@codingitwrong.com>",
   "license": "MIT",
   "devDependencies": {
@@ -13,6 +13,7 @@
     "prettier": "^2.6.2"
   },
   "scripts": {
+    "start": "node reactup.js",
     "test": "jest --watchAll",
     "lint": "eslint ."
   }
