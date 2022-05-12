@@ -9,6 +9,9 @@ const questions = [
   },
 ];
 
-inquirer.prompt(questions).then(answers => {
+async function run() {
+  const answers = await inquirer.prompt(questions);
   console.log(`Hello, ${answers.name}!`);
-});
+}
+
+run();
