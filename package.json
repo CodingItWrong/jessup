@@ -16,5 +16,8 @@
     "start": "node reactup.js",
     "test": "jest --watchAll",
     "lint": "eslint ."
+  },
+  "dependencies": {
+    "inquirer": "^8.2.4"
   }
 }
