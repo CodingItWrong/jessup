@@ -278,6 +278,8 @@ function initializeNode(answers) {
     }
   });
 
+  writeNodeReadme(answers);
+
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
@@ -401,6 +403,8 @@ function initializeNodeWithBabel(answers) {
     }
   });
 
+  writeNodeReadme(answers);
+
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
@@ -468,6 +472,53 @@ function writePrettierConfig({trailingComma = 'all'} = {}) {
       };
     `
   );
+}
+
+function writeNodeReadme(answers) {
+  group('Add readme', () => {
+    writeFile(
+      'README.md',
+      `# My App
+
+Describe your app here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Running
+
+\`\`\`
+$ yarn start
+\`\`\`
+${includeIf(
+  answers.unitTesting,
+  `
+## Test
+
+\`\`\`
+$ yarn test
+\`\`\`
+`
+)}`
+    );
+  });
+}
+
+function includeIf(condition, text) {
+  if (condition) {
+    return text;
+  } else {
+    return '';
+  }
 }
 
 function writeReactNativeEslintConfig() {
