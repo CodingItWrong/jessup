@@ -40,7 +40,7 @@ function initializeCra(answers) {
       `
     );
     writePrettierConfig();
-    command('npm set-script lint "eslint ."');
+    setScript('lint', 'eslint .');
     command('yarn lint --fix');
   });
 }
@@ -56,6 +56,10 @@ function initializeDocusaurus(answers) {
   commit('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
   });
+
+  if (answers.unitTesting) {
+    console.log('TODO: UNIT TESTING');
+  }
 
   commit('Configure linting and formatting', () => {
     addNpmPackages({
@@ -102,7 +106,7 @@ function initializeDocusaurus(answers) {
       `
     );
     writePrettierConfig();
-    command('npm set-script lint "eslint ."');
+    setScript('lint', 'eslint .');
     command('yarn lint --fix');
   });
 }
@@ -117,6 +121,32 @@ function initializeExpo(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  if (answers.unitTesting) {
+    commit('Add Jest', () => {
+      addNpmPackages({
+        dev: true,
+        packages: ['jest@^26', 'jest-expo'],
+      });
+      setScript('test', 'jest --watchAll');
+    });
+    commit('Add RNTL and jest-native', () => {
+      addNpmPackages({
+        dev: true,
+        packages: [
+          '@testing-library/react-native',
+          '@testing-library/jest-native',
+        ],
+      });
+      writeFile(
+        'jest-setup-after-env.js',
+        `
+          import '@testing-library/jest-native/extend-expect';
+        `
+      );
+      // TODO: configure jest setup after env
+    });
+  }
+
   commit('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
@@ -129,7 +159,7 @@ function initializeExpo(answers) {
     });
     writeReactNativeEslintConfig();
     writePrettierConfig();
-    command('npm set-script lint "eslint ."');
+    setScript('lint', 'eslint .');
     command('yarn lint --fix');
   });
 }
@@ -147,6 +177,16 @@ function initializeNode(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  if (answers.unitTesting) {
+    commit('Add Jest', () => {
+      addNpmPackages({
+        dev: true,
+        packages: ['jest'],
+      });
+      setScript('test', 'jest --watchAll');
+    });
+  }
+
   commit('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
@@ -155,6 +195,7 @@ function initializeNode(answers) {
         'eslint-config-prettier',
         'eslint-plugin-prettier',
         'prettier',
+        ...(answers.unitTesting ? ['eslint-plugin-jest'] : null),
       ],
     });
     writeFile(
@@ -162,8 +203,10 @@ function initializeNode(answers) {
       `
         module.exports = {
           extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+          ${answers.unitTesting ? "plugins: ['jest']," : ''}
           env: {
             es6: true,
+            ${answers.unitTesting ? "'jest/globals': true," : ''}
             node: true,
           },
           parserOptions: {
@@ -176,7 +219,7 @@ function initializeNode(answers) {
       `
     );
     writePrettierConfig({trailingComma: 'es5'});
-    command('npm set-script lint "eslint ."');
+    setScript('lint', 'eslint .');
     command('yarn lint --fix');
   });
 }
@@ -194,6 +237,16 @@ function initializeNodeWithBabel(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  if (answers.unitTesting) {
+    commit('Add Jest', () => {
+      addNpmPackages({
+        dev: true,
+        packages: ['jest'],
+      });
+      setScript('test', 'jest --watchAll');
+    });
+  }
+
   commit('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
@@ -206,6 +259,7 @@ function initializeNodeWithBabel(answers) {
         'eslint-plugin-import',
         'eslint-plugin-prettier',
         'prettier',
+        ...(answers.unitTesting ? ['babel-jest', 'eslint-plugin-jest'] : null),
       ],
     });
     writeFile(
@@ -231,13 +285,15 @@ function initializeNodeWithBabel(answers) {
         module.exports = {
           extends: ['eslint:recommended', 'plugin:prettier/recommended'],
           parser: '@babel/eslint-parser',
-          plugins: ['prettier', 'import'],
+          plugins: [
+            'import',
+            ${answers.unitTesting ? "'jest'," : ''}
+            'prettier',
+          ],
           env: {
             es6: true,
+            ${answers.unitTesting ? "'jest/globals': true," : ''}
             node: true,
-          },
-          globals: {
-            fail: true,
           },
           parserOptions: {
             ecmaVersion: 'latest',
@@ -256,7 +312,7 @@ function initializeNodeWithBabel(answers) {
       `
     );
     writePrettierConfig();
-    command('npm set-script lint "eslint ."');
+    setScript('lint', 'eslint .');
     command('yarn lint --fix');
   });
 }
@@ -272,6 +328,25 @@ function initializeRN(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  if (answers.unitTesting) {
+    commit('Add RNTL and jest-native', () => {
+      addNpmPackages({
+        dev: true,
+        packages: [
+          '@testing-library/react-native',
+          '@testing-library/jest-native',
+        ],
+      });
+      writeFile(
+        'jest-setup-after-env.js',
+        `
+          import '@testing-library/jest-native/extend-expect';
+        `
+      );
+      // TODO: configure jest setup after env
+    });
+  }
+
   commit('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
@@ -279,14 +354,24 @@ function initializeRN(answers) {
     });
     writeReactNativeEslintConfig();
     writePrettierConfig();
-    command('npm set-script lint "eslint ."');
+    setScript('lint', 'eslint .');
     command('yarn lint --fix');
   });
 }
 
 const FRAMEWORKS = [
-  {value: 'cra', name: 'Create React App', initializer: initializeCra},
-  {value: 'doc', name: 'Docusaurus', initializer: initializeDocusaurus},
+  {
+    value: 'cra',
+    name: 'Create React App',
+    skipUnitTestingQuestion: true,
+    initializer: initializeCra,
+  },
+  {
+    value: 'doc',
+    name: 'Docusaurus',
+    skipUnitTestingQuestion: true,
+    initializer: initializeDocusaurus,
+  },
   {value: 'expo', name: 'Expo', initializer: initializeExpo},
   {value: 'node', name: 'Node', initializer: initializeNode},
   {
@@ -310,6 +395,12 @@ const questions = [
     message: 'What name do you want to give the project?',
     default: 'my-new-project',
   },
+  {
+    type: 'confirm',
+    name: 'unitTesting',
+    message: 'Add unit testing?',
+    when: answers => !frameworkForAnswers(answers).skipUnitTestingQuestion,
+  },
 ];
 
 function commit(message, stepImplementation) {
@@ -322,6 +413,10 @@ function commit(message, stepImplementation) {
 
 function command(commandText) {
   console.log(`$ ${commandText}`);
+}
+
+function setScript(scriptName, implementation) {
+  console.log(`npm set-script ${scriptName} "${implementation}"`);
 }
 
 function writeFile(path, contents) {
@@ -373,10 +468,14 @@ function addNpmPackages({dev = false, packages}) {
   command(`yarn add ${dev ? '-D ' : ''}${packages.join(' ')}`);
 }
 
+function frameworkForAnswers(answers) {
+  return FRAMEWORKS.find(f => f.value === answers.framework);
+}
+
 async function run() {
   const answers = await inquirer.prompt(questions);
 
-  const framework = FRAMEWORKS.find(f => f.value === answers.framework);
+  const framework = frameworkForAnswers(answers);
 
   console.log(`Initializing ${framework.name} project`);
 
