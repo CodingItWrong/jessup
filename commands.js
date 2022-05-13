@@ -18,7 +18,7 @@ function command(commandText) {
   // TODO: use polymorphism instead of a conditional
   if (!DRY_RUN) {
     try {
-      execSync(commandText);
+      execSync(commandText, {stdio: 'inherit'});
     } catch (e) {
       console.error(e.stdout.toString());
       console.error(e.stderr.toString());
