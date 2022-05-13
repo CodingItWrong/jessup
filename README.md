@@ -13,3 +13,7 @@ Features it initializes in the projects:
 - Prevents package.lock
 - ESLint and Prettier formatting
 - Jest unit tests, optionally
+
+## License
+
+MIT
