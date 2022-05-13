@@ -1,5 +1,6 @@
 const {
   addNpmPackages,
+  cd,
   command,
   commit,
   setScript,
@@ -9,7 +10,7 @@ const {
 function initializeCra(answers) {
   commit('Initialize project', () => {
     command(`yarn create react-app ${answers.projectName}`);
-    command(`cd ${answers.projectName}`);
+    cd(answers.projectName);
     command('git init .');
   });
 
@@ -56,7 +57,7 @@ function initializeDocusaurus(answers) {
     command(
       `npx create-docusaurus@latest -p yarn ${answers.projectName} classic`
     );
-    command(`cd ${answers.projectName}`);
+    cd(answers.projectName);
   });
 
   commit('Prevent package lock', () => {
@@ -120,7 +121,7 @@ function initializeDocusaurus(answers) {
 function initializeExpo(answers) {
   commit('Initialize project', () => {
     command(`expo init ${answers.projectName} -t blank --yarn`);
-    command(`cd ${answers.projectName}`);
+    cd(answers.projectName);
   });
 
   commit('Prevent package lock', () => {
@@ -173,7 +174,7 @@ function initializeExpo(answers) {
 function initializeNode(answers) {
   commit('Initialize project', () => {
     command(`mkdir ${answers.projectName}`);
-    command(`cd ${answers.projectName}`);
+    cd(answers.projectName);
     command('yarn init -y');
     command('npx gitignore node');
     command('git init .');
@@ -233,7 +234,7 @@ function initializeNode(answers) {
 function initializeNodeWithBabel(answers) {
   commit('Initialize project', () => {
     command(`mkdir ${answers.projectName}`);
-    command(`cd ${answers.projectName}`);
+    cd(answers.projectName);
     command('yarn init -y');
     command('npx gitignore node');
     command('git init .');
@@ -326,7 +327,7 @@ function initializeNodeWithBabel(answers) {
 function initializeRN(answers) {
   commit('Initialize project', () => {
     command(`npx react-native init ${answers.projectName}`);
-    command(`cd ${answers.projectName}`);
+    cd(answers.projectName);
     command('git init .');
   });
 
