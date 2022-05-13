@@ -51,11 +51,13 @@ function initializeCra(answers) {
     );
     writePrettierConfig();
     setScript('lint', 'eslint .');
-    command('yarn lint --fix');
-
     setScript('start', 'EXTEND_ESLINT=true react-scripts start');
     setScript('build', 'EXTEND_ESLINT=true react-scripts build');
     setScript('test', 'EXTEND_ESLINT=true react-scripts test');
+  });
+
+  group('Autoformat files', () => {
+    command('yarn lint --fix');
   });
 }
 
@@ -121,6 +123,9 @@ function initializeDocusaurus(answers) {
     );
     writePrettierConfig();
     setScript('lint', 'eslint .');
+  });
+
+  group('Autoformat files', () => {
     command('yarn lint --fix');
   });
 }
@@ -178,7 +183,6 @@ function initializeExpo(answers) {
     writeReactNativeEslintConfig();
     writePrettierConfig();
     setScript('lint', 'eslint .');
-    command('yarn lint --fix');
   });
 
   group('Create sample files', () => {
@@ -218,6 +222,10 @@ function initializeExpo(answers) {
         `
       );
     }
+  });
+
+  group('Autoformat files', () => {
+    command('yarn lint --fix');
   });
 }
 
@@ -277,7 +285,6 @@ function initializeNode(answers) {
     );
     writePrettierConfig({trailingComma: 'es5'});
     setScript('lint', 'eslint .');
-    command('yarn lint --fix');
   });
 
   group('Create sample files', () => {
@@ -304,6 +311,10 @@ function initializeNode(answers) {
         `
       );
     }
+  });
+
+  group('Autoformat files', () => {
+    command('yarn lint --fix');
   });
 }
 
@@ -424,6 +435,10 @@ function initializeNodeWithBabel(answers) {
       );
     }
   });
+
+  group('Autoformat files', () => {
+    command('yarn lint --fix');
+  });
 }
 
 function initializeRN(answers) {
@@ -464,6 +479,9 @@ function initializeRN(answers) {
     writeReactNativeEslintConfig();
     writePrettierConfig();
     setScript('lint', 'eslint .');
+  });
+
+  group('Autoformat files', () => {
     command('yarn lint --fix');
   });
 }
