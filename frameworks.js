@@ -229,6 +229,32 @@ function initializeNode(answers) {
     setScript('lint', 'eslint .');
     command('yarn lint --fix');
   });
+
+  commit('Create sample files', () => {
+    writeFile(
+      'hello.js',
+      `
+        module.exports = function hello(name = 'World') {
+          return \`Hello, \${name}!\`;
+        }
+      `
+    );
+
+    if (answers.unitTesting) {
+      writeFile(
+        'hello.spec.js',
+        `
+          const hello = require('./hello');
+
+          describe('hello', () => {
+            it('says hello', () => {
+              expect(hello('Josh')).toEqual('Hello, Josh!');
+            });
+          });
+        `
+      );
+    }
+  });
 }
 
 function initializeNodeWithBabel(answers) {
@@ -321,6 +347,32 @@ function initializeNodeWithBabel(answers) {
     writePrettierConfig();
     setScript('lint', 'eslint .');
     command('yarn lint --fix');
+  });
+
+  commit('Create sample files', () => {
+    writeFile(
+      'hello.js',
+      `
+        export default function hello(name = 'World') {
+          return \`Hello, \${name}!\`;
+        }
+      `
+    );
+
+    if (answers.unitTesting) {
+      writeFile(
+        'hello.spec.js',
+        `
+          import hello from './hello';
+
+          describe('hello', () => {
+            it('says hello', () => {
+              expect(hello('Josh')).toEqual('Hello, Josh!');
+            });
+          });
+        `
+      );
+    }
   });
 }
 
