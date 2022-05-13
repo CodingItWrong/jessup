@@ -126,10 +126,14 @@ function initializeDocusaurus(answers) {
 }
 
 function initializeExpo(answers) {
-  group('Initialize project', () => {
-    command(`expo init ${answers.projectName} -t blank --yarn`);
-    cd(answers.projectName);
-  });
+  group(
+    'Initialize project',
+    () => {
+      command(`expo init ${answers.projectName} -t blank --yarn`);
+      cd(answers.projectName);
+    },
+    {commit: false}
+  );
 
   group('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
