@@ -2,17 +2,24 @@
 
 A JavaScript and React project initializer. Supports the following project types:
 
-- Node, optionally including Babel
-- Create React App
-- Docusaurus
-- React Native, either via CLI or Expo
+- [Node](https://nodejs.org/en/), optionally including [Babel](https://babeljs.io/)
+- [Create React App](https://create-react-app.dev/)
+- [Docusaurus](https://docusaurus.io/)
+- React Native, either via [Expo](https://expo.dev/) or React Native CLI (for info, see the [React Native Environment Setup docs](https://reactnative.dev/docs/environment-setup) and click "React Native CLI Quickstart")
 
 Features it initializes in the projects:
 
-- Git
-- Prevents package.lock
-- ESLint and Prettier formatting
-- Jest unit tests, optionally
+- Git: ensures the project is initialized as a git repo with appropriate `.gitignore` and commits each setup step separately
+- Yarn: prevents `package.lock` which would conflict with `yarn.lock`
+- Linting and formatting: sets up ESLint and Prettier
+- Testing: optionally sets up Jest unit tests
+
+## Installation
+
+- Clone the repo
+- Add the project's `bin/jessup` directory to your shell's `PATH`
+- Install any system dependencies for the framework you want to use
+- Run `jessup` and answer the prompts
 
 ## License
 
