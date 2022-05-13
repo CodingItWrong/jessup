@@ -195,7 +195,7 @@ function initializeNode(answers) {
         'eslint-config-prettier',
         'eslint-plugin-prettier',
         'prettier',
-        ...(answers.unitTesting ? ['eslint-plugin-jest'] : null),
+        ...(answers.unitTesting ? ['eslint-plugin-jest'] : []),
       ],
     });
     writeFile(
@@ -259,7 +259,7 @@ function initializeNodeWithBabel(answers) {
         'eslint-plugin-import',
         'eslint-plugin-prettier',
         'prettier',
-        ...(answers.unitTesting ? ['babel-jest', 'eslint-plugin-jest'] : null),
+        ...(answers.unitTesting ? ['babel-jest', 'eslint-plugin-jest'] : []),
       ],
     });
     writeFile(
