@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 
-function runCra(answers) {
+function initializeCra(answers) {
   commit('Initialize project', () => {
     command(`yarn create react-app ${answers.projectName}`);
     command(`cd ${answers.projectName}`);
@@ -39,23 +39,40 @@ function runCra(answers) {
         };
       `
     );
-    writeFile(
-      '.prettierrc.js',
-      `
-          module.exports = {
-            arrowParens: 'avoid',
-            bracketSpacing: false,
-            singleQuote: true,
-            trailingComma: 'es5',
-          };
-        `
-    );
+    writePrettierConfig();
     command('npm set-script lint "eslint ."');
     command('yarn lint --fix');
   });
 }
 
-function runNode(answers) {
+function initializeExpo(answers) {
+  commit('Initialize project', () => {
+    command(`expo init ${answers.projectName} -t blank --yarn`);
+    command(`cd ${answers.projectName}`);
+  });
+
+  commit('Prevent package lock', () => {
+    command('echo "package-lock=false" >> .npmrc');
+  });
+
+  commit('Configure linting and formatting', () => {
+    addNpmPackages({
+      dev: true,
+      packages: [
+        '@react-native-community/eslint-config',
+        'eslint@"^7.0"',
+        'eslint-plugin-import',
+        'prettier',
+      ],
+    });
+    writeReactNativeEslintConfig();
+    writePrettierConfig();
+    command('npm set-script lint "eslint ."');
+    command('yarn lint --fix');
+  });
+}
+
+function initializeNode(answers) {
   commit('Initialize project', () => {
     command(`mkdir ${answers.projectName}`);
     command(`cd ${answers.projectName}`);
@@ -98,30 +115,43 @@ function runNode(answers) {
         };
       `
     );
-    writeFile(
-      '.prettierrc.js',
-      `
-        module.exports = {
-          arrowParens: 'avoid',
-          bracketSpacing: false,
-          singleQuote: true,
-          trailingComma: 'es5',
-        };
-      `
-    );
+    writePrettierConfig({trailingComma: 'es5'});
+    command('npm set-script lint "eslint ."');
+    command('yarn lint --fix');
+  });
+}
+
+function initializeRN(answers) {
+  commit('Initialize project', () => {
+    command(`npx react-native init ${answers.projectName}`);
+    command(`cd ${answers.projectName}`);
+    command('git init .');
+  });
+
+  commit('Prevent package lock', () => {
+    command('echo "package-lock=false" >> .npmrc');
+  });
+
+  commit('Configure linting and formatting', () => {
+    addNpmPackages({
+      dev: true,
+      packages: ['eslint-plugin-import'],
+    });
+    writeReactNativeEslintConfig();
+    writePrettierConfig();
     command('npm set-script lint "eslint ."');
     command('yarn lint --fix');
   });
 }
 
 const FRAMEWORKS = [
-  {value: 'cra', name: 'Create React App', initializer: runCra},
+  {value: 'cra', name: 'Create React App', initializer: initializeCra},
   {value: 'doc', name: 'Docusaurus'},
-  {value: 'expo', name: 'Expo'},
+  {value: 'expo', name: 'Expo', initializer: initializeExpo},
   {value: 'next', name: 'Next'},
-  {value: 'node', name: 'Node', initializer: runNode},
+  {value: 'node', name: 'Node', initializer: initializeNode},
   {value: 'babel', name: 'Node with Babel'},
-  {value: 'rn', name: 'React Native CLI'},
+  {value: 'rn', name: 'React Native CLI', initializer: initializeRN},
 ];
 
 const questions = [
@@ -158,6 +188,42 @@ function writeFile(path, contents) {
   console.log('');
   console.log('(end of file)');
   console.log('');
+}
+
+function writePrettierConfig({trailingComma = 'all'} = {}) {
+  writeFile(
+    '.prettierrc.js',
+    `
+      module.exports = {
+        arrowParens: 'avoid',
+        bracketSpacing: false,
+        singleQuote: true,
+        trailingComma: '${trailingComma}',
+      };
+    `
+  );
+}
+
+function writeReactNativeEslintConfig() {
+  writeFile(
+    '.eslintrc.js',
+    `
+      module.exports = {
+        root: true,
+        extends: '@react-native-community',
+        plugins: ['import'],
+        rules: {
+          'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
+          'no-duplicate-imports': 'error',
+          quotes: ['error', 'single', {avoidEscape: true}], // single quote unless using interpolation
+          'sort-imports': [
+            'warn',
+            {ignoreDeclarationSort: true, ignoreMemberSort: false},
+          ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
+        },
+      };
+    `
+  );
 }
 
 function addNpmPackages({dev = false, packages}) {
