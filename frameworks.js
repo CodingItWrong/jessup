@@ -235,6 +235,55 @@ $ yarn test
   });
 }
 
+function initializeNext(answers) {
+  group(
+    'Initialize project',
+    () => {
+      command(`yarn create next-app ${answers.projectName}`);
+      cd(answers.projectName);
+    },
+    {commit: false}
+  );
+
+  group('Prevent package lock', () => {
+    command('echo "package-lock=false" >> .npmrc');
+  });
+
+  group('Configure linting and formatting', () => {
+    addNpmPackages({
+      dev: true,
+      packages: [
+        'eslint-config-prettier',
+        'eslint-plugin-prettier',
+        'prettier',
+      ],
+    });
+    writeFile(
+      '.eslintrc.json',
+      `
+        {
+          "extends": ["next/core-web-vitals", "prettier"],
+          "plugins": ["prettier"],
+          "rules": {
+            "import/order": ["warn", {"alphabetize": {"order": "asc"}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
+            "no-duplicate-imports": "error",
+            "prettier/prettier": "warn",
+            "sort-imports": [
+              "warn",
+              {"ignoreDeclarationSort": true, "ignoreMemberSort": false}
+            ] // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
+          }
+        }
+      `
+    );
+    writePrettierConfig();
+  });
+
+  group('Autoformat files', () => {
+    command('yarn lint --fix');
+  });
+}
+
 function initializeNode(answers) {
   group('Initialize project', () => {
     command(`mkdir ${answers.projectName}`);
@@ -681,6 +730,12 @@ const FRAMEWORKS = [
     initializer: initializeDocusaurus,
   },
   {value: 'expo', name: 'Expo', initializer: initializeExpo},
+  {
+    value: 'next',
+    name: 'Next',
+    skipUnitTestingQuestion: true,
+    initializer: initializeNext,
+  },
   {value: 'node', name: 'Node', initializer: initializeNode},
   {
     value: 'babel',
