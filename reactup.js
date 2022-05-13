@@ -162,10 +162,8 @@ function initializeNode(answers) {
       `
         module.exports = {
           extends: ['eslint:recommended', 'plugin:prettier/recommended'],
-          plugins: ['jest'],
           env: {
             es6: true,
-            'jest/globals': true,
             node: true,
           },
           parserOptions: {
@@ -178,6 +176,86 @@ function initializeNode(answers) {
       `
     );
     writePrettierConfig({trailingComma: 'es5'});
+    command('npm set-script lint "eslint ."');
+    command('yarn lint --fix');
+  });
+}
+
+function initializeNodeWithBabel(answers) {
+  commit('Initialize project', () => {
+    command(`mkdir ${answers.projectName}`);
+    command(`cd ${answers.projectName}`);
+    command('yarn init -y');
+    command('npx gitignore node');
+    command('git init .');
+  });
+
+  commit('Prevent package lock', () => {
+    command('echo "package-lock=false" >> .npmrc');
+  });
+
+  commit('Configure linting and formatting', () => {
+    addNpmPackages({
+      dev: true,
+      packages: [
+        '@babel/core',
+        '@babel/preset-env',
+        '@babel/eslint-parser',
+        'eslint',
+        'eslint-config-prettier',
+        'eslint-plugin-import',
+        'eslint-plugin-prettier',
+        'prettier',
+      ],
+    });
+    writeFile(
+      '.babelrc.js',
+      `
+        module.exports = {
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                targets: {
+                  node: 'current',
+                },
+              },
+            ],
+          ],
+        };
+      `
+    );
+    writeFile(
+      '.eslintrc.js',
+      `
+        module.exports = {
+          extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+          parser: '@babel/eslint-parser',
+          plugins: ['prettier', 'import'],
+          env: {
+            es6: true,
+            node: true,
+          },
+          globals: {
+            fail: true,
+          },
+          parserOptions: {
+            ecmaVersion: 'latest',
+            sourceType: 'module',
+          },
+          rules: {
+            'import/order': ['error', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
+            'no-duplicate-imports': 'error',
+            'prettier/prettier': 'error',
+            'sort-imports': [
+              'error',
+              {ignoreDeclarationSort: true, ignoreMemberSort: false},
+            ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
+          },
+        };
+      `
+    );
+    writePrettierConfig();
     command('npm set-script lint "eslint ."');
     command('yarn lint --fix');
   });
@@ -211,7 +289,11 @@ const FRAMEWORKS = [
   {value: 'doc', name: 'Docusaurus', initializer: initializeDocusaurus},
   {value: 'expo', name: 'Expo', initializer: initializeExpo},
   {value: 'node', name: 'Node', initializer: initializeNode},
-  {value: 'babel', name: 'Node with Babel'},
+  {
+    value: 'babel',
+    name: 'Node with Babel',
+    initializer: initializeNodeWithBabel,
+  },
   {value: 'rn', name: 'React Native CLI', initializer: initializeRN},
 ];
 
