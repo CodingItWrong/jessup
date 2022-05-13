@@ -186,42 +186,7 @@ function initializeExpo(answers) {
   });
 
   group('Create sample files', () => {
-    writeFile(
-      'App.js',
-      `
-        import React from 'react';
-        import {SafeAreaView, StatusBar, Text} from 'react-native';
-
-        export default function App() {
-          return (
-            <>
-              <StatusBar barStyle="dark-content" />
-              <SafeAreaView>
-                <Text>Hello, React Native!</Text>
-              </SafeAreaView>
-            </>
-          );
-        }
-      `
-    );
-
-    if (answers.unitTesting) {
-      writeFile(
-        'App.spec.js',
-        `
-          import {render} from '@testing-library/react-native';
-          import React from 'react';
-          import App from './App';
-
-          describe('App', () => {
-            it('renders a hello message', () => {
-              const {queryByText} = render(<App />);
-              expect(queryByText('Hello, React Native!')).not.toBeNull();
-            });
-          });
-        `
-      );
-    }
+    writeSampleReactNativeFiles(answers);
   });
 
   group('Autoformat files', () => {
@@ -481,6 +446,11 @@ function initializeRN(answers) {
     setScript('lint', 'eslint .');
   });
 
+  group('Create sample files', () => {
+    command('rm -fr __tests__');
+    writeSampleReactNativeFiles(answers);
+  });
+
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
@@ -520,6 +490,45 @@ function writeReactNativeEslintConfig() {
       };
     `
   );
+}
+
+function writeSampleReactNativeFiles(answers) {
+  writeFile(
+    'App.js',
+    `
+      import React from 'react';
+      import {SafeAreaView, StatusBar, Text} from 'react-native';
+
+      export default function App() {
+        return (
+          <>
+            <StatusBar barStyle="dark-content" />
+            <SafeAreaView>
+              <Text>Hello, React Native!</Text>
+            </SafeAreaView>
+          </>
+        );
+      }
+    `
+  );
+
+  if (answers.unitTesting) {
+    writeFile(
+      'App.spec.js',
+      `
+        import {render} from '@testing-library/react-native';
+        import React from 'react';
+        import App from './App';
+
+        describe('App', () => {
+          it('renders a hello message', () => {
+            const {queryByText} = render(<App />);
+            expect(queryByText('Hello, React Native!')).not.toBeNull();
+          });
+        });
+      `
+    );
+  }
 }
 
 const FRAMEWORKS = [
