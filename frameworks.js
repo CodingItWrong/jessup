@@ -422,7 +422,12 @@ const FRAMEWORKS = [
     name: 'Node with Babel',
     initializer: initializeNodeWithBabel,
   },
-  {value: 'rn', name: 'React Native CLI', initializer: initializeRN},
+  {
+    value: 'rn',
+    name: 'React Native CLI',
+    initializer: initializeRN,
+    defaultProjectName: 'MyRNApp',
+  },
 ];
 
 module.exports = FRAMEWORKS;
