@@ -5,7 +5,7 @@ const {chdir} = require('process');
 const DRY_RUN = false;
 
 function cd(path) {
-  console.log('$ cd ${path}');
+  console.log(`$ cd ${path}`);
 
   if (!DRY_RUN) {
     chdir(path);
