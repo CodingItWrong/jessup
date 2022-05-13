@@ -189,6 +189,47 @@ function initializeExpo(answers) {
     writeSampleReactNativeFiles(answers);
   });
 
+  group('Add readme', () => {
+    writeFile(
+      'README.md',
+      `# My App
+
+Describe your app here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+Optional:
+
+- To run on Android Emulator, [Android Studio](https://developer.android.com/studio)
+- To run on iOS Simulator, [Xcode](https://developer.apple.com/xcode/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Running
+
+- Run \`yarn start\`
+- From the interface that appears, choose "Run on Android device/emulator", "Run on iOS Simulator", and/or "Run in web browser"
+${includeIf(
+  answers.unitTesting,
+  `
+## Test
+
+\`\`\`
+$ yarn test
+\`\`\`
+`
+)}`
+    );
+  });
+
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
