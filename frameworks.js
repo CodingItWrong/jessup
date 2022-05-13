@@ -530,12 +530,86 @@ function initializeRN(answers) {
     });
   }
 
+  if (answers.detox) {
+    group('Add Detox', () => {
+      addNpmPackages({
+        dev: true,
+        packages: ['detox', 'jest'],
+      });
+    });
+    command('detox init -r jest');
+    writeFile(
+      '.detoxrc.json',
+      `{
+  "testRunner": "jest",
+  "runnerConfig": "e2e/config.json",
+  "skipLegacyWorkersInjection": true,
+  "apps": {
+    "ios": {
+      "type": "ios.app",
+      "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/${answers.projectName}.app",
+      "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
+    },
+    "android": {
+      "type": "android.apk",
+      "binaryPath": "SPECIFY_PATH_TO_YOUR_APP_BINARY"
+    }
+  },
+  "devices": {
+    "simulator": {
+      "type": "ios.simulator",
+      "device": {
+        "type": "iPhone 13"
+      }
+    },
+    "emulator": {
+      "type": "android.emulator",
+      "device": {
+        "avdName": "Pixel_3a_API_30_x86"
+      }
+    }
+  },
+  "configurations": {
+    "ios": {
+      "device": "simulator",
+      "app": "ios"
+    },
+    "android": {
+      "device": "emulator",
+      "app": "android"
+    }
+  }
+}`
+    );
+    writeFile(
+      'e2e/firstTest.e2e.js',
+      `
+        describe('Example', () => {
+          beforeAll(async () => {
+            await device.launchApp();
+          });
+
+          beforeEach(async () => {
+            await device.reloadReactNative();
+          });
+
+          it('should say hello', async () => {
+            await expect(element(by.text('Hello, React Native!'))).toBeVisible();
+          });
+        });
+      `
+    );
+  }
+
   group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
-      packages: ['eslint-plugin-import'],
+      packages: [
+        'eslint-plugin-import',
+        ...(answers.detox ? ['eslint-plugin-detox'] : []),
+      ],
     });
-    writeReactNativeEslintConfig();
+    writeReactNativeEslintConfig(answers);
     writePrettierConfig();
     setScript('lint', 'eslint .');
   });
@@ -579,13 +653,21 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 ${includeIf(
   answers.unitTesting,
   `
-## Test
+## Unit Tests
 
 \`\`\`
 $ yarn test
 \`\`\`
 `
-)}`
+)}${includeIf(
+        answers.detox,
+        `
+## E2E Tests
+
+- Run \`detox build -c ios\` (only needs to be run once per native code changes)
+- Run \`detox test -c ios\`
+`
+      )}`
     );
   });
 
@@ -647,22 +729,14 @@ $ yarn test
   });
 }
 
-function includeIf(condition, text) {
-  if (condition) {
-    return text;
-  } else {
-    return '';
-  }
-}
-
-function writeReactNativeEslintConfig() {
+function writeReactNativeEslintConfig(answers) {
   writeFile(
     '.eslintrc.js',
     `
       module.exports = {
         root: true,
         extends: '@react-native-community',
-        plugins: ['import'],
+        plugins: ['import'${answers.detox ? ", 'detox'" : ''}],
         rules: {
           'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
           'no-duplicate-imports': 'error',
@@ -672,9 +746,30 @@ function writeReactNativeEslintConfig() {
             {ignoreDeclarationSort: true, ignoreMemberSort: false},
           ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
         },
+        ${includeIf(
+          answers.detox,
+          `        overrides: [
+          {
+            files: ['*.e2e.js'],
+            env: {
+              'detox/detox': true,
+              jest: true,
+              'jest/globals': true,
+            },
+          },
+        ],`
+        )}
       };
     `
   );
+}
+
+function includeIf(condition, text) {
+  if (condition) {
+    return text;
+  } else {
+    return '';
+  }
 }
 
 function writeSampleReactNativeFiles(answers) {
@@ -747,6 +842,7 @@ const FRAMEWORKS = [
     name: 'React Native CLI',
     initializer: initializeRN,
     defaultProjectName: 'MyRNApp',
+    detoxAvailable: true,
   },
 ];
 

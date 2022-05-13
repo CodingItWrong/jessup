@@ -19,8 +19,14 @@ const questions = [
   {
     type: 'confirm',
     name: 'unitTesting',
-    message: 'Add unit testing?',
+    message: 'Configure unit testing?',
     when: answers => !frameworkForAnswers(answers).skipUnitTestingQuestion,
+  },
+  {
+    type: 'confirm',
+    name: 'detox',
+    message: 'Configure E2E testing with Detox?',
+    when: answers => frameworkForAnswers(answers).detoxAvailable,
   },
 ];
 
