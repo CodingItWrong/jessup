@@ -11,7 +11,7 @@ function commit(message, stepImplementation) {
 }
 
 function setScript(scriptName, implementation) {
-  console.log(`npm set-script ${scriptName} "${implementation}"`);
+  command(`npm set-script ${scriptName} "${implementation}"`);
 }
 
 function writeFile(path, contents) {
