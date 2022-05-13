@@ -45,6 +45,68 @@ function initializeCra(answers) {
   });
 }
 
+function initializeDocusaurus(answers) {
+  commit('Initialize project', () => {
+    command(
+      `npx create-docusaurus@latest -p yarn ${answers.projectName} classic`
+    );
+    command(`cd ${answers.projectName}`);
+  });
+
+  commit('Prevent package lock', () => {
+    command('echo "package-lock=false" >> .npmrc');
+  });
+
+  commit('Configure linting and formatting', () => {
+    addNpmPackages({
+      dev: true,
+      packages: [
+        '@babel/core',
+        '@babel/eslint-parser',
+        'eslint',
+        'eslint-config-prettier',
+        'eslint-plugin-import',
+        'eslint-plugin-prettier',
+        'eslint-plugin-react',
+        'prettier',
+      ],
+    });
+    writeFile(
+      '.eslintrc.js',
+      `
+        module.exports = {
+          extends: ['plugin:react/recommended', 'prettier'],
+          plugins: ['prettier', 'import'],
+          parser: '@babel/eslint-parser',
+          env: {
+            browser: true,
+            es6: true,
+          },
+          settings: {
+            react: {
+              version: 'detect',
+            },
+          },
+          rules: {
+            'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
+            'no-duplicate-imports': 'error',
+            'prettier/prettier': 'warn',
+            quotes: ['error', 'single', {avoidEscape: true}], // single quote unless using interpolation
+            'react/prop-types': 'off',
+            'sort-imports': [
+              'warn',
+              {ignoreDeclarationSort: true, ignoreMemberSort: false},
+            ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
+          },
+        };
+      `
+    );
+    writePrettierConfig();
+    command('npm set-script lint "eslint ."');
+    command('yarn lint --fix');
+  });
+}
+
 function initializeExpo(answers) {
   commit('Initialize project', () => {
     command(`expo init ${answers.projectName} -t blank --yarn`);
@@ -146,9 +208,8 @@ function initializeRN(answers) {
 
 const FRAMEWORKS = [
   {value: 'cra', name: 'Create React App', initializer: initializeCra},
-  {value: 'doc', name: 'Docusaurus'},
+  {value: 'doc', name: 'Docusaurus', initializer: initializeDocusaurus},
   {value: 'expo', name: 'Expo', initializer: initializeExpo},
-  {value: 'next', name: 'Next'},
   {value: 'node', name: 'Node', initializer: initializeNode},
   {value: 'babel', name: 'Node with Babel'},
   {value: 'rn', name: 'React Native CLI', initializer: initializeRN},
