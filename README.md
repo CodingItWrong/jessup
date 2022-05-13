@@ -1,23 +1,15 @@
-# My Node App
+# jessup
 
-Describe your app here.
+A JavaScript and React project initializer. Supports the following project types:
 
-## Installation
+- Node, optionally including Babel
+- Create React App
+- Docusaurus
+- React Native, either via CLI or Expo
 
-```
-$ yarn install
-```
+Features it initializes in the projects:
 
-Dependencies are locked with `yarn.lock`; please use `yarn` rather than `npm` for installing.
-
-## Running
-
-```
-$ yarn start
-```
-
-## Test
-
-```
-$ yarn test
-```
+- Git
+- Prevents package.lock
+- ESLint and Prettier formatting
+- Jest unit tests, optionally
