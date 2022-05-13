@@ -2,23 +2,26 @@ const {
   addNpmPackages,
   cd,
   command,
-  commit,
+  group,
   setScript,
   writeFile,
 } = require('./commands');
 
 function initializeCra(answers) {
-  commit('Initialize project', () => {
-    command(`yarn create react-app ${answers.projectName}`);
-    cd(answers.projectName);
-    command('git init .');
-  });
+  group(
+    'Initialize project',
+    () => {
+      command(`yarn create react-app ${answers.projectName}`);
+      cd(answers.projectName);
+    },
+    {commit: false}
+  );
 
-  commit('Prevent package lock', () => {
+  group('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
   });
 
-  commit('Configure linting and formatting', () => {
+  group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
       packages: [
@@ -49,18 +52,22 @@ function initializeCra(answers) {
     writePrettierConfig();
     setScript('lint', 'eslint .');
     command('yarn lint --fix');
+
+    setScript('start', 'EXTEND_ESLINT=true react-scripts start');
+    setScript('build', 'EXTEND_ESLINT=true react-scripts build');
+    setScript('test', 'EXTEND_ESLINT=true react-scripts test');
   });
 }
 
 function initializeDocusaurus(answers) {
-  commit('Initialize project', () => {
+  group('Initialize project', () => {
     command(
       `npx create-docusaurus@latest -p yarn ${answers.projectName} classic`
     );
     cd(answers.projectName);
   });
 
-  commit('Prevent package lock', () => {
+  group('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
   });
 
@@ -68,7 +75,7 @@ function initializeDocusaurus(answers) {
     console.log('TODO: UNIT TESTING');
   }
 
-  commit('Configure linting and formatting', () => {
+  group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
       packages: [
@@ -119,24 +126,24 @@ function initializeDocusaurus(answers) {
 }
 
 function initializeExpo(answers) {
-  commit('Initialize project', () => {
+  group('Initialize project', () => {
     command(`expo init ${answers.projectName} -t blank --yarn`);
     cd(answers.projectName);
   });
 
-  commit('Prevent package lock', () => {
+  group('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
   });
 
   if (answers.unitTesting) {
-    commit('Add Jest', () => {
+    group('Add Jest', () => {
       addNpmPackages({
         dev: true,
         packages: ['jest@^26', 'jest-expo'],
       });
       setScript('test', 'jest --watchAll');
     });
-    commit('Add RNTL and jest-native', () => {
+    group('Add RNTL and jest-native', () => {
       addNpmPackages({
         dev: true,
         packages: [
@@ -154,7 +161,7 @@ function initializeExpo(answers) {
     });
   }
 
-  commit('Configure linting and formatting', () => {
+  group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
       packages: [
@@ -172,7 +179,7 @@ function initializeExpo(answers) {
 }
 
 function initializeNode(answers) {
-  commit('Initialize project', () => {
+  group('Initialize project', () => {
     command(`mkdir ${answers.projectName}`);
     cd(answers.projectName);
     command('yarn init -y');
@@ -180,12 +187,12 @@ function initializeNode(answers) {
     command('git init .');
   });
 
-  commit('Prevent package lock', () => {
+  group('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
   });
 
   if (answers.unitTesting) {
-    commit('Add Jest', () => {
+    group('Add Jest', () => {
       addNpmPackages({
         dev: true,
         packages: ['jest'],
@@ -194,7 +201,7 @@ function initializeNode(answers) {
     });
   }
 
-  commit('Configure linting and formatting', () => {
+  group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
       packages: [
@@ -230,7 +237,7 @@ function initializeNode(answers) {
     command('yarn lint --fix');
   });
 
-  commit('Create sample files', () => {
+  group('Create sample files', () => {
     writeFile(
       'hello.js',
       `
@@ -258,7 +265,7 @@ function initializeNode(answers) {
 }
 
 function initializeNodeWithBabel(answers) {
-  commit('Initialize project', () => {
+  group('Initialize project', () => {
     command(`mkdir ${answers.projectName}`);
     cd(answers.projectName);
     command('yarn init -y');
@@ -266,12 +273,12 @@ function initializeNodeWithBabel(answers) {
     command('git init .');
   });
 
-  commit('Prevent package lock', () => {
+  group('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
   });
 
   if (answers.unitTesting) {
-    commit('Add Jest', () => {
+    group('Add Jest', () => {
       addNpmPackages({
         dev: true,
         packages: ['jest'],
@@ -280,7 +287,7 @@ function initializeNodeWithBabel(answers) {
     });
   }
 
-  commit('Configure linting and formatting', () => {
+  group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
       packages: [
@@ -349,7 +356,7 @@ function initializeNodeWithBabel(answers) {
     command('yarn lint --fix');
   });
 
-  commit('Create sample files', () => {
+  group('Create sample files', () => {
     writeFile(
       'hello.js',
       `
@@ -377,18 +384,18 @@ function initializeNodeWithBabel(answers) {
 }
 
 function initializeRN(answers) {
-  commit('Initialize project', () => {
+  group('Initialize project', () => {
     command(`npx react-native init ${answers.projectName}`);
     cd(answers.projectName);
     command('git init .');
   });
 
-  commit('Prevent package lock', () => {
+  group('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
   });
 
   if (answers.unitTesting) {
-    commit('Add RNTL and jest-native', () => {
+    group('Add RNTL and jest-native', () => {
       addNpmPackages({
         dev: true,
         packages: [
@@ -406,7 +413,7 @@ function initializeRN(answers) {
     });
   }
 
-  commit('Configure linting and formatting', () => {
+  group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
       packages: ['eslint-plugin-import'],

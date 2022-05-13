@@ -27,12 +27,14 @@ function command(commandText) {
   }
 }
 
-function commit(message, stepImplementation) {
+function group(message, stepImplementation, {commit = true} = {}) {
   console.log(message.toUpperCase());
   console.log('');
   stepImplementation();
-  command('git add .');
-  command(`git commit -m "${message}"`);
+  if (commit) {
+    command('git add .');
+    command(`git commit -m "${message}"`);
+  }
   console.log('');
 }
 
@@ -61,7 +63,7 @@ module.exports = {
   addNpmPackages,
   cd,
   command,
-  commit,
+  group,
   setScript,
   writeFile,
 };
