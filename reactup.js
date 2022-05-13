@@ -12,7 +12,7 @@ const questions = [
     type: 'input',
     name: 'projectName',
     message: 'What name do you want to give the project?',
-    default: 'my-new-project',
+    default: answers => `my-${answers.framework}-project`,
   },
   {
     type: 'confirm',
