@@ -496,6 +496,50 @@ function initializeRN(answers) {
     writeSampleReactNativeFiles(answers);
   });
 
+  group('Add readme', () => {
+    writeFile(
+      'README.md',
+      `# My App
+
+Describe your app here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+- [Ruby](https://www.ruby-lang.org/)
+- [Cocoapods](https://cocoapods.org/)
+- [Android Studio](https://developer.android.com/studio) and/or [Xcode](https://developer.apple.com/xcode/)
+
+## Installation
+
+- Clone the repo
+
+\`\`\`bash
+$ yarn install
+$ cd ios
+$ pod install
+\`\`\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Running
+
+- In one terminal, run \`yarn start\`
+- In another terminal, run \`yarn android\` or \`yarn ios\`
+${includeIf(
+  answers.unitTesting,
+  `
+## Test
+
+\`\`\`
+$ yarn test
+\`\`\`
+`
+)}`
+    );
+  });
+
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
