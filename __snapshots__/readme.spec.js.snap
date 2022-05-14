@@ -290,3 +290,87 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 - Run \`yarn dev\`
 "
 `;
+
+exports[`writeReadme node allows returning a readme with unit testing 1`] = `
+"# My Project
+
+Describe your project here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Unit Tests
+
+- Run \`yarn test\`
+"
+`;
+
+exports[`writeReadme node allows returning a readme without unit testing 1`] = `
+"# My Project
+
+Describe your project here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+"
+`;
+
+exports[`writeReadme node with babel allows returning a readme with unit testing 1`] = `
+"# My Project
+
+Describe your project here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Unit Tests
+
+- Run \`yarn test\`
+"
+`;
+
+exports[`writeReadme node with babel allows returning a readme without unit testing 1`] = `
+"# My Project
+
+Describe your project here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+"
+`;

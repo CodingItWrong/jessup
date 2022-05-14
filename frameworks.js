@@ -904,10 +904,16 @@ const FRAMEWORKS = [
     cypressAvailable: true,
     initializer: initializeNext,
   },
-  {value: 'node', name: 'Node', initializer: initializeNode},
+  {
+    value: 'node',
+    name: 'Node',
+    omitRunScript: true,
+    initializer: initializeNode,
+  },
   {
     value: 'babel',
     name: 'Node with Babel',
+    omitRunScript: true,
     initializer: initializeNodeWithBabel,
   },
   {

@@ -58,4 +58,32 @@ describe('writeReadme', () => {
       expect(writeReadme({framework: 'next', cypress: true})).toMatchSnapshot();
     });
   });
+
+  describe('node', () => {
+    it('allows returning a readme without unit testing', () => {
+      expect(
+        writeReadme({framework: 'node', unitTesting: false})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with unit testing', () => {
+      expect(
+        writeReadme({framework: 'node', unitTesting: true})
+      ).toMatchSnapshot();
+    });
+  });
+
+  describe('node with babel', () => {
+    it('allows returning a readme without unit testing', () => {
+      expect(
+        writeReadme({framework: 'babel', unitTesting: false})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with unit testing', () => {
+      expect(
+        writeReadme({framework: 'babel', unitTesting: true})
+      ).toMatchSnapshot();
+    });
+  });
 });

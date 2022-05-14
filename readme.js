@@ -26,18 +26,21 @@ Optional:
 - Run \`yarn install\`
 
 Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
-
+${includeIf(
+  !framework.omitRunScript,
+  `
 ## Running
 
 - Run \`yarn ${answers.framework === 'next' ? 'dev' : 'start'}\`
-${includeIf(
-  framework.alwaysIncludeUnitTesting || answers.unitTesting,
-  `
+`
+)}${includeIf(
+    framework.alwaysIncludeUnitTesting || answers.unitTesting,
+    `
 ## Unit Tests
 
 - Run \`yarn test\`
 `
-)}${includeIf(
+  )}${includeIf(
     answers.cypress,
     `
 ## E2E Tests
