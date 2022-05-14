@@ -288,7 +288,11 @@ function initializeNext(answers) {
       '.eslintrc.json',
       `
         {
-          "extends": ["next/core-web-vitals", "prettier"],
+          "extends": [
+            "eslint:recommended",
+            "next/core-web-vitals",
+            "prettier"
+          ],
           "plugins": [
             "prettier"
             ${includeIf(answers.cypress, ',"cypress"')}
