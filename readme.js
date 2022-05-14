@@ -11,7 +11,15 @@ Describe your project here.
 
 - [Node](https://nodejs.org)
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+${includeIf(
+  answers.framework === 'expo',
+  `
+Optional:
 
+- To run on Android Emulator, [Android Studio](https://developer.android.com/studio)
+- To run on iOS Simulator, [Xcode](https://developer.apple.com/xcode/)
+`
+)}
 ## Installation
 
 - Clone the repo

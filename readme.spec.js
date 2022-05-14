@@ -20,4 +20,30 @@ describe('writeReadme', () => {
       expect(writeReadme({framework: 'doc', cypress: true})).toMatchSnapshot();
     });
   });
+
+  describe('expo', () => {
+    it('allows returning a readme without any testing', () => {
+      expect(
+        writeReadme({framework: 'expo', unitTesting: false, cypress: false})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with unit testing', () => {
+      expect(
+        writeReadme({framework: 'expo', unitTesting: true, cypress: false})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with cypress', () => {
+      expect(
+        writeReadme({framework: 'expo', unitTesting: false, cypress: true})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with both unit testing and cypress', () => {
+      expect(
+        writeReadme({framework: 'expo', unitTesting: true, cypress: true})
+      ).toMatchSnapshot();
+    });
+  });
 });
