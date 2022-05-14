@@ -1,4 +1,4 @@
-function writeReadme() {
+function writeReadme(answers) {
   return `# My Project
 
 Describe your project here.
@@ -22,7 +22,23 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 ## Unit Tests
 
 - Run \`yarn test \`
-`;
+${includeIf(
+  answers.cypress,
+  `
+## E2E Tests
+
+- Run the app
+- In another terminal, run \`yarn cypress\`
+`
+)}`;
+}
+
+function includeIf(condition, text) {
+  if (condition) {
+    return text;
+  } else {
+    return '';
+  }
 }
 
 module.exports = {writeReadme};
