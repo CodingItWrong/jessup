@@ -38,6 +38,46 @@ describe('getGitHubActionsConfig', () => {
     });
   });
 
+  describe('expo', () => {
+    const framework = getFramework('expo');
+
+    it('can generate a config without any testing', () => {
+      expect(
+        getGitHubActionsConfig(
+          {framework: 'expo', unitTesting: false, cypress: false},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+
+    it('can generate a config with unit testing', () => {
+      expect(
+        getGitHubActionsConfig(
+          {framework: 'expo', unitTesting: true, cypress: false},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+
+    it('can generate a config with cypress', () => {
+      expect(
+        getGitHubActionsConfig(
+          {framework: 'expo', unitTesting: false, cypress: true},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+
+    it('can generate a config with both unit testing and cypress', () => {
+      expect(
+        getGitHubActionsConfig(
+          {framework: 'expo', unitTesting: true, cypress: true},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+  });
+
   describe('node', () => {
     const framework = getFramework('node');
 

@@ -35,15 +35,24 @@ ${includeIf(
       - name: ESLint
         run: yarn lint
 ${includeIf(
-  answers.cypress,
+  answers.cypress && answers.framework === 'expo',
   `
+      - name: Install Expo CLI
+        run: yarn global add expo-cli
+
+      - name: Install Sharp CLI
+        run: yarn global add sharp-cli
+`
+)}${includeIf(
+    answers.cypress,
+    `
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
           start: yarn web
           wait-on: 'http://localhost:${framework.devServerPort}'
 `
-)}`;
+  )}`;
 }
 
 module.exports = {getGitHubActionsConfig};
