@@ -67,6 +67,7 @@ function initializeDocusaurus(answers) {
       `npx create-docusaurus@latest -p yarn ${answers.projectName} classic`
     );
     cd(answers.projectName);
+    command('git init .');
   });
 
   group('Prevent package lock', () => {
