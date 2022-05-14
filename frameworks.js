@@ -6,6 +6,7 @@ const {
   setScript,
   writeFile,
 } = require('./commands');
+const {getReadmeContents} = require('./readme');
 
 function initializeCra(answers) {
   group(
@@ -63,7 +64,7 @@ function initializeCra(answers) {
     setScript('test', 'EXTEND_ESLINT=true react-scripts test');
   });
 
-  // TODO: Cypress into readme
+  writeReadme(answers);
 
   group('Autoformat files', () => {
     command('yarn lint --fix');
@@ -88,8 +89,6 @@ function initializeDocusaurus(answers) {
   }
 
   addCypress(answers, {port: 3000});
-
-  // TODO: Cypress into Readme
 
   group('Configure linting and formatting', () => {
     addNpmPackages({
@@ -149,6 +148,8 @@ function initializeDocusaurus(answers) {
     writePrettierConfig();
     setScript('lint', 'eslint .');
   });
+
+  writeReadme(answers);
 
   group('Autoformat files', () => {
     command('yarn lint --fix');
@@ -217,46 +218,7 @@ function initializeExpo(answers) {
     writeSampleReactNativeFiles(answers);
   });
 
-  group('Add readme', () => {
-    writeFile(
-      'README.md',
-      `# My App
-
-Describe your app here.
-
-## Requirements
-
-- [Node](https://nodejs.org)
-- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
-
-Optional:
-
-- To run on Android Emulator, [Android Studio](https://developer.android.com/studio)
-- To run on iOS Simulator, [Xcode](https://developer.apple.com/xcode/)
-
-## Installation
-
-- Clone the repo
-- Run \`yarn install\`
-
-Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
-
-## Running
-
-- Run \`yarn start\`
-- From the interface that appears, choose "Run on Android device/emulator", "Run on iOS Simulator", and/or "Run in web browser"
-${includeIf(
-  answers.unitTesting,
-  `
-## Test
-
-\`\`\`
-$ yarn test
-\`\`\`
-`
-)}`
-    );
-  });
+  writeReadme(answers);
 
   group('Autoformat files', () => {
     command('yarn lint --fix');
@@ -317,6 +279,8 @@ function initializeNext(answers) {
     );
     writePrettierConfig();
   });
+
+  writeReadme(answers);
 
   group('Autoformat files', () => {
     command('yarn lint --fix');
@@ -407,7 +371,7 @@ function initializeNode(answers) {
     }
   });
 
-  writeNodeReadme(answers);
+  writeReadme(answers);
 
   group('Autoformat files', () => {
     command('yarn lint --fix');
@@ -532,7 +496,7 @@ function initializeNodeWithBabel(answers) {
     }
   });
 
-  writeNodeReadme(answers);
+  writeReadme(answers);
 
   group('Autoformat files', () => {
     command('yarn lint --fix');
@@ -658,57 +622,7 @@ function initializeRN(answers) {
     writeSampleReactNativeFiles(answers);
   });
 
-  group('Add readme', () => {
-    writeFile(
-      'README.md',
-      `# My App
-
-Describe your app here.
-
-## Requirements
-
-- [Node](https://nodejs.org)
-- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
-- [Ruby](https://www.ruby-lang.org/)
-- [Cocoapods](https://cocoapods.org/)
-- [Android Studio](https://developer.android.com/studio) and/or [Xcode](https://developer.apple.com/xcode/)
-
-## Installation
-
-- Clone the repo
-
-\`\`\`bash
-$ yarn install
-$ cd ios
-$ pod install
-\`\`\`
-
-Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
-
-## Running
-
-- In one terminal, run \`yarn start\`
-- In another terminal, run \`yarn android\` or \`yarn ios\`
-${includeIf(
-  answers.unitTesting,
-  `
-## Unit Tests
-
-\`\`\`
-$ yarn test
-\`\`\`
-`
-)}${includeIf(
-        answers.detox,
-        `
-## E2E Tests
-
-- Run \`detox build -c ios\` (only needs to be run once per native code changes)
-- Run \`detox test -c ios\`
-`
-      )}`
-    );
-  });
+  writeReadme(answers);
 
   group('Autoformat files', () => {
     command('yarn lint --fix');
@@ -749,45 +663,6 @@ function writePrettierConfig({trailingComma = 'all'} = {}) {
   );
 }
 
-function writeNodeReadme(answers) {
-  group('Add readme', () => {
-    writeFile(
-      'README.md',
-      `# My App
-
-Describe your app here.
-
-## Requirements
-
-- [Node](https://nodejs.org)
-- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
-
-## Installation
-
-- Clone the repo
-- Run \`yarn install\`
-
-Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
-
-## Running
-
-\`\`\`
-$ yarn start
-\`\`\`
-${includeIf(
-  answers.unitTesting,
-  `
-## Test
-
-\`\`\`
-$ yarn test
-\`\`\`
-`
-)}`
-    );
-  });
-}
-
 function writeReactNativeEslintConfig(answers) {
   writeFile(
     '.eslintrc.js',
@@ -826,6 +701,14 @@ function writeReactNativeEslintConfig(answers) {
       };
     `
   );
+}
+
+function writeReadme(answers) {
+  const framework = FRAMEWORKS.find(f => f.value === answers.framework);
+
+  group('Configure readme', () => {
+    writeFile('README.md', getReadmeContents(answers, framework));
+  });
 }
 
 function includeIf(condition, text) {

@@ -1,8 +1,4 @@
-const FRAMEWORKS = require('./frameworks');
-
-function getReadmeContents(answers) {
-  const framework = frameworkForAnswers(answers);
-
+function getReadmeContents(answers, framework) {
   return `# My Project
 
 Describe your project here.
