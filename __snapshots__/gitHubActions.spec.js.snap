@@ -35,7 +35,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: yarn web
+          start: yarn start
           wait-on: 'http://localhost:3000'
 "
 `;
@@ -106,7 +106,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: yarn web
+          start: yarn start
           wait-on: 'http://localhost:3000'
 "
 `;

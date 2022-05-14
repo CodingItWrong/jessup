@@ -49,7 +49,7 @@ ${includeIf(
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: yarn web
+          start: yarn ${framework.devServerScript ?? 'start'}
           wait-on: 'http://localhost:${framework.devServerPort}'
 `
   )}`;
