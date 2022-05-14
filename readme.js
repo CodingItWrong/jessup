@@ -1,6 +1,6 @@
 const FRAMEWORKS = require('./frameworks');
 
-function writeReadme(answers) {
+function getReadmeContents(answers) {
   const framework = frameworkForAnswers(answers);
 
   return `# My Project
@@ -86,4 +86,4 @@ function includeIf(condition, text) {
   }
 }
 
-module.exports = {writeReadme};
+module.exports = {getReadmeContents};

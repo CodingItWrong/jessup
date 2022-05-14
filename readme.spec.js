@@ -1,48 +1,68 @@
-const {writeReadme} = require('./readme');
+const {getReadmeContents} = require('./readme');
 
-describe('writeReadme', () => {
+describe('getReadmeContents', () => {
   describe('cra', () => {
     it('allows returning a readme without cypress', () => {
-      expect(writeReadme({framework: 'cra', cypress: false})).toMatchSnapshot();
+      expect(
+        getReadmeContents({framework: 'cra', cypress: false})
+      ).toMatchSnapshot();
     });
 
     it('allows returning a readme with cypress', () => {
-      expect(writeReadme({framework: 'cra', cypress: true})).toMatchSnapshot();
+      expect(
+        getReadmeContents({framework: 'cra', cypress: true})
+      ).toMatchSnapshot();
     });
   });
 
   describe('docusaurus', () => {
     it('allows returning a readme without cypress', () => {
-      expect(writeReadme({framework: 'doc', cypress: false})).toMatchSnapshot();
+      expect(
+        getReadmeContents({framework: 'doc', cypress: false})
+      ).toMatchSnapshot();
     });
 
     it('allows returning a readme with cypress', () => {
-      expect(writeReadme({framework: 'doc', cypress: true})).toMatchSnapshot();
+      expect(
+        getReadmeContents({framework: 'doc', cypress: true})
+      ).toMatchSnapshot();
     });
   });
 
   describe('expo', () => {
     it('allows returning a readme without any testing', () => {
       expect(
-        writeReadme({framework: 'expo', unitTesting: false, cypress: false})
+        getReadmeContents({
+          framework: 'expo',
+          unitTesting: false,
+          cypress: false,
+        })
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with unit testing', () => {
       expect(
-        writeReadme({framework: 'expo', unitTesting: true, cypress: false})
+        getReadmeContents({
+          framework: 'expo',
+          unitTesting: true,
+          cypress: false,
+        })
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with cypress', () => {
       expect(
-        writeReadme({framework: 'expo', unitTesting: false, cypress: true})
+        getReadmeContents({
+          framework: 'expo',
+          unitTesting: false,
+          cypress: true,
+        })
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with both unit testing and cypress', () => {
       expect(
-        writeReadme({framework: 'expo', unitTesting: true, cypress: true})
+        getReadmeContents({framework: 'expo', unitTesting: true, cypress: true})
       ).toMatchSnapshot();
     });
   });
@@ -50,25 +70,27 @@ describe('writeReadme', () => {
   describe('next', () => {
     it('allows returning a readme without cypress', () => {
       expect(
-        writeReadme({framework: 'next', cypress: false})
+        getReadmeContents({framework: 'next', cypress: false})
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with cypress', () => {
-      expect(writeReadme({framework: 'next', cypress: true})).toMatchSnapshot();
+      expect(
+        getReadmeContents({framework: 'next', cypress: true})
+      ).toMatchSnapshot();
     });
   });
 
   describe('node', () => {
     it('allows returning a readme without unit testing', () => {
       expect(
-        writeReadme({framework: 'node', unitTesting: false})
+        getReadmeContents({framework: 'node', unitTesting: false})
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with unit testing', () => {
       expect(
-        writeReadme({framework: 'node', unitTesting: true})
+        getReadmeContents({framework: 'node', unitTesting: true})
       ).toMatchSnapshot();
     });
   });
@@ -76,13 +98,13 @@ describe('writeReadme', () => {
   describe('node with babel', () => {
     it('allows returning a readme without unit testing', () => {
       expect(
-        writeReadme({framework: 'babel', unitTesting: false})
+        getReadmeContents({framework: 'babel', unitTesting: false})
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with unit testing', () => {
       expect(
-        writeReadme({framework: 'babel', unitTesting: true})
+        getReadmeContents({framework: 'babel', unitTesting: true})
       ).toMatchSnapshot();
     });
   });
@@ -90,25 +112,25 @@ describe('writeReadme', () => {
   describe('rn', () => {
     it('allows returning a readme without any testing', () => {
       expect(
-        writeReadme({framework: 'rn', unitTesting: false, detox: false})
+        getReadmeContents({framework: 'rn', unitTesting: false, detox: false})
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with unit testing', () => {
       expect(
-        writeReadme({framework: 'rn', unitTesting: true, detox: false})
+        getReadmeContents({framework: 'rn', unitTesting: true, detox: false})
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with detox', () => {
       expect(
-        writeReadme({framework: 'rn', unitTesting: false, detox: true})
+        getReadmeContents({framework: 'rn', unitTesting: false, detox: true})
       ).toMatchSnapshot();
     });
 
     it('allows returning a readme with both unit testing and detox', () => {
       expect(
-        writeReadme({framework: 'rn', unitTesting: true, detox: true})
+        getReadmeContents({framework: 'rn', unitTesting: true, detox: true})
       ).toMatchSnapshot();
     });
   });
