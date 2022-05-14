@@ -21,6 +21,8 @@ function initializeCra(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  addCypress(answers, {port: 3000});
+
   group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
@@ -28,6 +30,7 @@ function initializeCra(answers) {
         'eslint-config-prettier',
         'eslint-plugin-prettier',
         'prettier',
+        ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
       ],
     });
     writeFile(
@@ -35,7 +38,11 @@ function initializeCra(answers) {
       `
         module.exports = {
           extends: ['react-app', 'prettier'],
-          plugins: ['prettier'],
+          plugins: [
+            'prettier',
+            ${includeIf(answers.cypress, "'cypress',")}
+          ],
+          ${includeIf(answers.cypress, "env: {'cypress/globals': true},")}
           rules: {
             'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
             'no-duplicate-imports': 'error',
@@ -55,6 +62,8 @@ function initializeCra(answers) {
     setScript('build', 'EXTEND_ESLINT=true react-scripts build');
     setScript('test', 'EXTEND_ESLINT=true react-scripts test');
   });
+
+  // TODO: Cypress into readme
 
   group('Autoformat files', () => {
     command('yarn lint --fix');
@@ -78,6 +87,10 @@ function initializeDocusaurus(answers) {
     console.log('TODO: UNIT TESTING');
   }
 
+  addCypress(answers, {port: 3000});
+
+  // TODO: Cypress into Readme
+
   group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
@@ -90,6 +103,7 @@ function initializeDocusaurus(answers) {
         'eslint-plugin-prettier',
         'eslint-plugin-react',
         'prettier',
+        ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
       ],
     });
     writeFile(
@@ -97,11 +111,16 @@ function initializeDocusaurus(answers) {
       `
         module.exports = {
           extends: ['plugin:react/recommended', 'prettier'],
-          plugins: ['prettier', 'import'],
+          plugins: [
+            'prettier',
+            'import',
+            ${includeIf(answers.cypress, "'cypress',")}
+          ],
           parser: '@babel/eslint-parser',
           env: {
             browser: true,
             es6: true,
+            ${includeIf(answers.cypress, "'cypress/globals': true")}
           },
           settings: {
             react: {
@@ -171,6 +190,8 @@ function initializeExpo(answers) {
     });
   }
 
+  addCypress(answers, {port: 19006});
+
   group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
@@ -179,9 +200,10 @@ function initializeExpo(answers) {
         'eslint@"^7.0"',
         'eslint-plugin-import',
         'prettier',
+        ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
       ],
     });
-    writeReactNativeEslintConfig();
+    writeReactNativeEslintConfig(answers);
     writePrettierConfig();
     setScript('lint', 'eslint .');
   });
@@ -250,6 +272,8 @@ function initializeNext(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  addCypress(answers, {port: 3000});
+
   group('Configure linting and formatting', () => {
     addNpmPackages({
       dev: true,
@@ -257,6 +281,7 @@ function initializeNext(answers) {
         'eslint-config-prettier',
         'eslint-plugin-prettier',
         'prettier',
+        ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
       ],
     });
     writeFile(
@@ -264,7 +289,11 @@ function initializeNext(answers) {
       `
         {
           "extends": ["next/core-web-vitals", "prettier"],
-          "plugins": ["prettier"],
+          "plugins": [
+            "prettier"
+            ${includeIf(answers.cypress, ',"cypress"')}
+          ],
+          ${includeIf(answers.cypress, '"env": {"cypress/globals": true},')}
           "rules": {
             "import/order": ["warn", {"alphabetize": {"order": "asc"}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
             "no-duplicate-imports": "error",
@@ -677,6 +706,26 @@ $ yarn test
   });
 }
 
+function addCypress(answers, {port}) {
+  if (answers.cypress) {
+    group('Add Cypress', () => {
+      addNpmPackages({
+        dev: true,
+        packages: ['cypress'],
+      });
+      setScript('cypress', 'cypress open');
+      writeFile(
+        'cypress.json',
+        `{
+  "baseUrl": "http://localhost:${port}",
+  "video": false
+}
+`
+      );
+    });
+  }
+}
+
 function writePrettierConfig({trailingComma = 'all'} = {}) {
   writeFile(
     '.prettierrc.js',
@@ -737,7 +786,12 @@ function writeReactNativeEslintConfig(answers) {
       module.exports = {
         root: true,
         extends: '@react-native-community',
-        plugins: ['import'${answers.detox ? ", 'detox'" : ''}],
+        plugins: [
+          'import',
+          ${includeIf(answers.detox, "'detox',")}
+          ${includeIf(answers.cypress, "'cypress',")}
+        ],
+        ${includeIf(answers.cypress, "env: {'cypress/globals': true},")}
         rules: {
           'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
           'no-duplicate-imports': 'error',
@@ -817,19 +871,27 @@ const FRAMEWORKS = [
     value: 'cra',
     name: 'Create React App',
     skipUnitTestingQuestion: true,
+    cypressAvailable: true,
     initializer: initializeCra,
   },
   {
     value: 'doc',
     name: 'Docusaurus',
     skipUnitTestingQuestion: true,
+    cypressAvailable: true,
     initializer: initializeDocusaurus,
   },
-  {value: 'expo', name: 'Expo', initializer: initializeExpo},
+  {
+    value: 'expo',
+    name: 'Expo',
+    cypressAvailable: true,
+    initializer: initializeExpo,
+  },
   {
     value: 'next',
     name: 'Next',
     skipUnitTestingQuestion: true,
+    cypressAvailable: true,
     initializer: initializeNext,
   },
   {value: 'node', name: 'Node', initializer: initializeNode},

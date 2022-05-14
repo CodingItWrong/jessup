@@ -24,8 +24,14 @@ const questions = [
   },
   {
     type: 'confirm',
+    name: 'cypress',
+    message: 'Configure E2E web testing with Cypress?',
+    when: answers => frameworkForAnswers(answers).cypressAvailable,
+  },
+  {
+    type: 'confirm',
     name: 'detox',
-    message: 'Configure E2E testing with Detox?',
+    message: 'Configure E2E native testing with Detox?',
     when: answers => frameworkForAnswers(answers).detoxAvailable,
   },
 ];
