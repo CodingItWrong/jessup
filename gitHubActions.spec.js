@@ -22,6 +22,22 @@ describe('getGitHubActionsConfig', () => {
     });
   });
 
+  describe('docusaurus', () => {
+    const framework = getFramework('doc');
+
+    it('can generate a config without cypress', () => {
+      expect(
+        getGitHubActionsConfig({framework: 'doc', cypress: false}, framework)
+      ).toMatchSnapshot();
+    });
+
+    it('can generate a config with cypress', () => {
+      expect(
+        getGitHubActionsConfig({framework: 'doc', cypress: true}, framework)
+      ).toMatchSnapshot();
+    });
+  });
+
   describe('node', () => {
     const framework = getFramework('node');
 
