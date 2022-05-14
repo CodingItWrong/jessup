@@ -7,5 +7,11 @@ describe('getGitHubActionsConfig', () => {
         getGitHubActionsConfig({framework: 'node', unitTesting: false})
       ).toMatchSnapshot();
     });
+
+    it('can generate a config with unit testing', () => {
+      expect(
+        getGitHubActionsConfig({framework: 'node', unitTesting: true})
+      ).toMatchSnapshot();
+    });
   });
 });
