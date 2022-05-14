@@ -11,9 +11,9 @@ Features it initializes in the projects:
 
 - Git: ensures the project is initialized as a git repo with appropriate `.gitignore` and commits each setup step separately
 - Yarn: prevents `package.lock` which would conflict with `yarn.lock`
-- Linting and formatting: sets up ESLint and Prettier
-- Unit Testing: optionally sets up Jest unit tests
-- E2E Testing: Detox for React Native CLI
+- Linting and formatting: sets up ESLint integrated with Prettier
+- Unit Testing: optionally sets up Jest unit tests, with React Testing Library for React-dom and React Native Testing Library for RN
+- E2E Testing: Cypress for web and Detox for React Native CLI
 
 ## Installation
 
