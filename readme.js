@@ -1,4 +1,8 @@
+const FRAMEWORKS = require('./frameworks');
+
 function writeReadme(answers) {
+  const framework = frameworkForAnswers(answers);
+
   return `# My Project
 
 Describe your project here.
@@ -18,19 +22,26 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 ## Running
 
 - Run \`yarn start\`
-
+${includeIf(
+  framework.alwaysIncludeUnitTesting || answers.unitTesting,
+  `
 ## Unit Tests
 
 - Run \`yarn test\`
-${includeIf(
-  answers.cypress,
-  `
+`
+)}${includeIf(
+    answers.cypress,
+    `
 ## E2E Tests
 
 - Run the app
 - In another terminal, run \`yarn cypress\`
 `
-)}`;
+  )}`;
+}
+
+function frameworkForAnswers(answers) {
+  return FRAMEWORKS.find(f => f.value === answers.framework);
 }
 
 function includeIf(condition, text) {

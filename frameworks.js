@@ -879,6 +879,7 @@ const FRAMEWORKS = [
   {
     value: 'cra',
     name: 'Create React App',
+    alwaysIncludeUnitTesting: true,
     skipUnitTestingQuestion: true,
     cypressAvailable: true,
     initializer: initializeCra,
