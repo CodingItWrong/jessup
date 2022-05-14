@@ -1,3 +1,5 @@
+const {includeIf} = require('./utils');
+
 function getReadmeContents(answers, framework) {
   return `# My Project
 
@@ -68,14 +70,6 @@ ${
 - Run \`detox test -c ios\`
 `
   )}`;
-}
-
-function includeIf(condition, text) {
-  if (condition) {
-    return text;
-  } else {
-    return '';
-  }
 }
 
 module.exports = {getReadmeContents};

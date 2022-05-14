@@ -1,3 +1,4 @@
+const {includeIf} = require('./utils');
 const {
   addNpmPackages,
   cd,
@@ -709,14 +710,6 @@ function writeReadme(answers) {
   group('Configure readme', () => {
     writeFile('README.md', getReadmeContents(answers, framework));
   });
-}
-
-function includeIf(condition, text) {
-  if (condition) {
-    return text;
-  } else {
-    return '';
-  }
 }
 
 function writeSampleReactNativeFiles(answers) {
