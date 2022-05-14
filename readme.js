@@ -70,10 +70,6 @@ ${
   )}`;
 }
 
-function frameworkForAnswers(answers) {
-  return FRAMEWORKS.find(f => f.value === answers.framework);
-}
-
 function includeIf(condition, text) {
   if (condition) {
     return text;
