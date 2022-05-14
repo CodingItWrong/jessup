@@ -14,6 +14,12 @@ describe('getGitHubActionsConfig', () => {
         getGitHubActionsConfig({framework: 'cra', cypress: false}, framework)
       ).toMatchSnapshot();
     });
+
+    it('can generate a config with cypress', () => {
+      expect(
+        getGitHubActionsConfig({framework: 'cra', cypress: true}, framework)
+      ).toMatchSnapshot();
+    });
   });
 
   describe('node', () => {

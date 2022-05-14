@@ -758,6 +758,7 @@ const FRAMEWORKS = [
     alwaysIncludeUnitTesting: true,
     skipUnitTestingQuestion: true,
     cypressAvailable: true,
+    devServerPort: 3000,
     initializer: initializeCra,
   },
   {
@@ -765,12 +766,14 @@ const FRAMEWORKS = [
     name: 'Docusaurus',
     skipUnitTestingQuestion: true,
     cypressAvailable: true,
+    devServerPort: 3000,
     initializer: initializeDocusaurus,
   },
   {
     value: 'expo',
     name: 'Expo',
     cypressAvailable: true,
+    devServerPort: 19006,
     initializer: initializeExpo,
   },
   {
@@ -778,6 +781,7 @@ const FRAMEWORKS = [
     name: 'Next',
     skipUnitTestingQuestion: true,
     cypressAvailable: true,
+    devServerPort: 3000,
     initializer: initializeNext,
   },
   {

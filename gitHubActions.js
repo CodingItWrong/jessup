@@ -34,7 +34,16 @@ ${includeIf(
 )}
       - name: ESLint
         run: yarn lint
-`;
+${includeIf(
+  answers.cypress,
+  `
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          start: yarn web
+          wait-on: 'http://localhost:${framework.devServerPort}'
+`
+)}`;
 }
 
 module.exports = {getGitHubActionsConfig};
