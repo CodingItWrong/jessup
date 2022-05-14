@@ -86,4 +86,30 @@ describe('writeReadme', () => {
       ).toMatchSnapshot();
     });
   });
+
+  describe('rn', () => {
+    it('allows returning a readme without any testing', () => {
+      expect(
+        writeReadme({framework: 'rn', unitTesting: false, detox: false})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with unit testing', () => {
+      expect(
+        writeReadme({framework: 'rn', unitTesting: true, detox: false})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with detox', () => {
+      expect(
+        writeReadme({framework: 'rn', unitTesting: false, detox: true})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with both unit testing and detox', () => {
+      expect(
+        writeReadme({framework: 'rn', unitTesting: true, detox: true})
+      ).toMatchSnapshot();
+    });
+  });
 });
