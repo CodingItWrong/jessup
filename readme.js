@@ -29,7 +29,7 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 
 ## Running
 
-- Run \`yarn start\`
+- Run \`yarn ${answers.framework === 'next' ? 'dev' : 'start'}\`
 ${includeIf(
   framework.alwaysIncludeUnitTesting || answers.unitTesting,
   `

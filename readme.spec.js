@@ -46,4 +46,16 @@ describe('writeReadme', () => {
       ).toMatchSnapshot();
     });
   });
+
+  describe('next', () => {
+    it('allows returning a readme without cypress', () => {
+      expect(
+        writeReadme({framework: 'next', cypress: false})
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with cypress', () => {
+      expect(writeReadme({framework: 'next', cypress: true})).toMatchSnapshot();
+    });
+  });
 });
