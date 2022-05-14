@@ -21,7 +21,7 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 
 ## Unit Tests
 
-- Run \`yarn test \`
+- Run \`yarn test\`
 ${includeIf(
   answers.cypress,
   `
