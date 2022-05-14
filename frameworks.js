@@ -110,7 +110,11 @@ function initializeDocusaurus(answers) {
       '.eslintrc.js',
       `
         module.exports = {
-          extends: ['plugin:react/recommended', 'prettier'],
+          extends: [
+            'eslint:recommended',
+            'plugin:react/recommended',
+            'prettier',
+          ],
           plugins: [
             'prettier',
             'import',
@@ -120,6 +124,7 @@ function initializeDocusaurus(answers) {
           env: {
             browser: true,
             es6: true,
+            node: true,
             ${includeIf(answers.cypress, "'cypress/globals': true")}
           },
           settings: {
