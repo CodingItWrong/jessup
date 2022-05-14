@@ -78,6 +78,22 @@ describe('getGitHubActionsConfig', () => {
     });
   });
 
+  describe('next', () => {
+    const framework = getFramework('next');
+
+    it('can generate a config without cypress', () => {
+      expect(
+        getGitHubActionsConfig({framework: 'next', cypress: false}, framework)
+      ).toMatchSnapshot();
+    });
+
+    it('can generate a config with cypress', () => {
+      expect(
+        getGitHubActionsConfig({framework: 'next', cypress: true}, framework)
+      ).toMatchSnapshot();
+    });
+  });
+
   describe('node', () => {
     const framework = getFramework('node');
 
