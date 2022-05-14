@@ -1,6 +1,6 @@
 const {includeIf} = require('./utils');
 
-function getGitHubActionsConfig(answers) {
+function getGitHubActionsConfig(answers, framework) {
   return `name: Test
 on: [push]
 
@@ -26,7 +26,7 @@ jobs:
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
 ${includeIf(
-  answers.unitTesting,
+  framework.alwaysIncludeUnitTesting || answers.unitTesting,
   `
       - name: Unit Tests
         run: yarn test --watchAll=false
