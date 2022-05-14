@@ -137,4 +137,20 @@ describe('getGitHubActionsConfig', () => {
       ).toMatchSnapshot();
     });
   });
+
+  describe('react native', () => {
+    const framework = getFramework('rn');
+
+    it('can generate a config without unit testing', () => {
+      expect(
+        getGitHubActionsConfig({framework: 'rn', unitTesting: false}, framework)
+      ).toMatchSnapshot();
+    });
+
+    it('can generate a config with unit testing', () => {
+      expect(
+        getGitHubActionsConfig({framework: 'rn', unitTesting: true}, framework)
+      ).toMatchSnapshot();
+    });
+  });
 });
