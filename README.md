@@ -17,6 +17,16 @@ Features it initializes in the projects:
 - Unit Testing: optionally sets up Jest unit tests, with React Testing Library for React-dom and React Native Testing Library for RN
 - E2E Testing: Cypress for web and Detox for React Native CLI
 
+## Project Status
+
+This project is early-stage. Upcoming work I would like to do:
+
+- [ ] Remove the need for manually editing files to finish project setup for some frameworks
+- [ ] Better error output
+- [ ] General robustness
+- [ ] Ability to request dry-run mode as an interactive option instead of a hard-coded flag
+- [ ] Easy way for users to customize the init scripts to their own needs
+
 ## Installation
 
 - Clone the repo
