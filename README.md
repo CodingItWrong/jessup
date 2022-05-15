@@ -1,6 +1,6 @@
 # jessup
 
-> ***"You can't handle the project setup!"*** - `jessup`
+> ***"You can't HANDLE the project setup!"*** - `jessup`
 
 A JavaScript and React project initializer. Supports the following project types:
 
