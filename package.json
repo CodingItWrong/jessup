@@ -1,7 +1,7 @@
 {
   "name": "jessup",
+  "main": "kernel.js",
   "version": "1.0.0",
-  "main": "jessup.js",
   "author": "Josh Justice <me@codingitwrong.com>",
   "license": "MIT",
   "devDependencies": {
@@ -13,7 +13,7 @@
     "prettier": "^2.6.2"
   },
   "scripts": {
-    "start": "node jessup.js",
+    "start": "node kernel.js",
     "test": "jest --watchAll",
     "lint": "eslint ."
   },
