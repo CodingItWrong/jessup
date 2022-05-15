@@ -34,6 +34,11 @@ const questions = [
     message: 'Configure E2E native testing with Detox?',
     when: answers => frameworkForAnswers(answers).detoxAvailable,
   },
+  {
+    type: 'confirm',
+    name: 'gitHubActions',
+    message: 'Configure CI with GitHub Actions?',
+  },
 ];
 
 function frameworkForAnswers(answers) {

@@ -4,10 +4,12 @@ const {
   cd,
   command,
   group,
+  mkdir,
   setScript,
   writeFile,
 } = require('./commands');
 const {getReadmeContents} = require('./readme');
+const {getGitHubActionsConfig} = require('./gitHubActions');
 
 function initializeCra(answers) {
   group(
@@ -70,6 +72,8 @@ function initializeCra(answers) {
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
+
+  writeGitHubActionsConfig(answers);
 }
 
 function initializeDocusaurus(answers) {
@@ -155,6 +159,8 @@ function initializeDocusaurus(answers) {
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
+
+  writeGitHubActionsConfig(answers);
 }
 
 function initializeExpo(answers) {
@@ -224,6 +230,8 @@ function initializeExpo(answers) {
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
+
+  writeGitHubActionsConfig(answers);
 }
 
 function initializeNext(answers) {
@@ -286,6 +294,8 @@ function initializeNext(answers) {
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
+
+  writeGitHubActionsConfig(answers);
 }
 
 function initializeNode(answers) {
@@ -377,6 +387,8 @@ function initializeNode(answers) {
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
+
+  writeGitHubActionsConfig(answers);
 }
 
 function initializeNodeWithBabel(answers) {
@@ -502,6 +514,8 @@ function initializeNodeWithBabel(answers) {
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
+
+  writeGitHubActionsConfig(answers);
 }
 
 function initializeRN(answers) {
@@ -628,6 +642,8 @@ function initializeRN(answers) {
   group('Autoformat files', () => {
     command('yarn lint --fix');
   });
+
+  writeGitHubActionsConfig(answers);
 }
 
 function addCypress(answers, {port}) {
@@ -709,6 +725,20 @@ function writeReadme(answers) {
 
   group('Configure readme', () => {
     writeFile('README.md', getReadmeContents(answers, framework));
+  });
+}
+
+function writeGitHubActionsConfig(answers) {
+  if (!answers.gitHubActions) {
+    return;
+  }
+
+  const framework = FRAMEWORKS.find(f => f.value === answers.framework);
+
+  group('Configure GitHub Actions', () => {
+    const path = '.github/workflows';
+    mkdir(path);
+    writeFile(`${path}/test.yml`, getGitHubActionsConfig(answers, framework));
   });
 }
 

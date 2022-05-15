@@ -12,6 +12,14 @@ function cd(path) {
   }
 }
 
+function mkdir(path) {
+  console.log(`$ mkdir -p ${path}`);
+
+  if (!DRY_RUN) {
+    fs.mkdirSync(path, {recursive: true});
+  }
+}
+
 function command(commandText) {
   console.log(`$ ${commandText}`);
 
@@ -64,6 +72,7 @@ module.exports = {
   cd,
   command,
   group,
+  mkdir,
   setScript,
   writeFile,
 };
