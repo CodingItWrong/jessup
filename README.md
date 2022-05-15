@@ -29,8 +29,7 @@ This project is early-stage. Upcoming work I would like to do:
 
 ## Installation
 
-- Clone the repo
-- Add the project's `bin/jessup` directory to your shell's `PATH`
+- `npm install -g jessup`
 - Install any system dependencies for the framework you want to use
 - Run `jessup` and answer the prompts
 
