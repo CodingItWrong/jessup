@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "author": "Josh Justice <me@codingitwrong.com>",
   "license": "MIT",
+  "bin": "./kernel.js",
   "devDependencies": {
     "eslint": "^8.15.0",
     "eslint-config-prettier": "^8.5.0",

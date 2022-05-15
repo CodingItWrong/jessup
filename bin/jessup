@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
+// for locally testing the bin file
+// when installing via npm, the package.json `bin` field handles this instead
 require('../kernel.js');
