@@ -1,5 +1,7 @@
 # jessup
 
+> ***"You can't handle the project setup!"*** - `jessup`
+
 A JavaScript and React project initializer. Supports the following project types:
 
 - [Node](https://nodejs.org/en/), optionally including [Babel](https://babeljs.io/)
