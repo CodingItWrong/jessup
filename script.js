@@ -914,4 +914,4 @@ function initialize(answers) {
   framework.initializer(answers);
 }
 
-module.exports = {questions, initialize};
+module.exports = {questions, initialize, FRAMEWORKS};

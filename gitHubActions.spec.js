@@ -1,5 +1,5 @@
 const {getGitHubActionsConfig} = require('./gitHubActions');
-const FRAMEWORKS = require('./frameworks');
+const {FRAMEWORKS} = require('./script');
 
 describe('getGitHubActionsConfig', () => {
   function getFramework(value) {

@@ -32,7 +32,7 @@ jobs:
       - name: ESLint
         run: yarn lint
 
-      - name: Cypress run
+      - name: Cypress Tests
         uses: cypress-io/github-action@v2
         with:
           start: yarn start
@@ -103,7 +103,7 @@ jobs:
       - name: ESLint
         run: yarn lint
 
-      - name: Cypress run
+      - name: Cypress Tests
         uses: cypress-io/github-action@v2
         with:
           start: yarn start
@@ -180,7 +180,7 @@ jobs:
       - name: Install Sharp CLI
         run: yarn global add sharp-cli
 
-      - name: Cypress run
+      - name: Cypress Tests
         uses: cypress-io/github-action@v2
         with:
           start: yarn web
@@ -223,7 +223,7 @@ jobs:
       - name: Install Sharp CLI
         run: yarn global add sharp-cli
 
-      - name: Cypress run
+      - name: Cypress Tests
         uses: cypress-io/github-action@v2
         with:
           start: yarn web
@@ -325,7 +325,7 @@ jobs:
       - name: ESLint
         run: yarn lint
 
-      - name: Cypress run
+      - name: Cypress Tests
         uses: cypress-io/github-action@v2
         with:
           start: yarn dev

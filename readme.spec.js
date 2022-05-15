@@ -1,5 +1,5 @@
 const {getReadmeContents} = require('./readme');
-const FRAMEWORKS = require('./frameworks');
+const {FRAMEWORKS} = require('./script');
 
 describe('getReadmeContents', () => {
   function getFramework(value) {
