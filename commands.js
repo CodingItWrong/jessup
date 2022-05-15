@@ -67,10 +67,15 @@ function addNpmPackages({dev = false, packages}) {
   command(`yarn add ${dev ? '-D ' : ''}${packages.join(' ')}`);
 }
 
+function displayMessage(message) {
+  console.log(message);
+}
+
 module.exports = {
   addNpmPackages,
   cd,
   command,
+  displayMessage,
   group,
   mkdir,
   setScript,

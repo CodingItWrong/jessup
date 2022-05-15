@@ -3,6 +3,7 @@ const {
   addNpmPackages,
   cd,
   command,
+  displayMessage,
   group,
   mkdir,
   setScript,
@@ -232,6 +233,19 @@ function initializeExpo(answers) {
   });
 
   writeGitHubActionsConfig(answers);
+
+  displayMessage(
+    `
+Your app is almost ready! To finish setup, add the following to package.json:
+
+"jest": {
+  "preset": "jest-expo",
+  "modulePathIgnorePatterns": ["cypress"],
+  "setupFilesAfterEnv": ["./jest-setup-after-env.js"]
+},
+
+`
+  );
 }
 
 function initializeNext(answers) {
@@ -644,6 +658,17 @@ function initializeRN(answers) {
   });
 
   writeGitHubActionsConfig(answers);
+
+  displayMessage(
+    `
+Your app is almost ready! To finish setup, update the "jest" key of your package.json to the following:
+
+"jest": {
+  "preset": "react-native",
+  "setupFilesAfterEnv": ["./jest-setup-after-env.js"]
+}
+`
+  );
 }
 
 function addCypress(answers, {port}) {
