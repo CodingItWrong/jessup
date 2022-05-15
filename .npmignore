@@ -1,0 +1,6 @@
+# files not to publish
+.github
+__snapshots__
+.eslintrc.js
+.prettierrc.js
+*.spec.js
