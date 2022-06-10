@@ -570,7 +570,7 @@ function initializeRN(answers) {
     group('Add Detox', () => {
       addNpmPackages({
         dev: true,
-        packages: ['detox', 'jest'],
+        packages: ['detox', 'jest@^27'],
       });
     });
     command('detox init -r jest');
