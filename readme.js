@@ -66,8 +66,8 @@ ${
     `
 ## E2E Tests
 
-- Run \`detox build -c ios\` (only needs to be run once per native code changes)
-- Run \`detox test -c ios\`
+- Run \`detox build -c ios.sim.debug\` (only needs to be run once per native code changes)
+- Run \`detox test -c ios.sim.debug\`
 `
   )}`;
 }
