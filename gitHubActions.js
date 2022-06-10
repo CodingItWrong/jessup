@@ -7,8 +7,12 @@ on: [push]
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-22.04
-    steps:
+    runs-on: ${answers.detox ? 'macos-latest' : 'ubuntu-22.04'}
+    ${includeIf(
+      answers.detox,
+      `timeout-minutes: 60
+    `
+    )}steps:
       - uses: actions/checkout@v3
 
       - name: Get yarn cache directory path
@@ -51,6 +55,27 @@ ${includeIf(
         with:
           start: yarn ${framework.devServerScript ?? 'start'}
           wait-on: 'http://localhost:${framework.devServerPort}'
+`
+  )}${includeIf(
+    answers.detox,
+    `
+      - name: Cache Pods
+        uses: actions/cache@v3
+        id: podcache
+        with:
+          path: ios/Pods
+          key: pods-\${{ hashFiles('**/Podfile.lock') }}
+
+      - name: Update Pods
+        if: steps.podcache.outputs.cache-hit != 'true'
+        run: |
+          gem update cocoapods xcodeproj
+          cd ios && pod install && cd ..
+
+      - run: brew tap wix/brew
+      - run: brew install applesimutils
+      - run: yarn detox build e2e --configuration ios.sim.release
+      - run: yarn detox test e2e --configuration ios.sim.release --cleanup --debug-synchronization 200
 `
   )}`;
 }

@@ -158,5 +158,23 @@ describe('getGitHubActionsConfig', () => {
         )
       ).toMatchSnapshot();
     });
+
+    it('can generate a config with e2e testing', () => {
+      expect(
+        getGitHubActionsConfig(
+          {framework: 'rn', unitTesting: false, detox: true},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+
+    it('can generate a config with unit and e2e testing', () => {
+      expect(
+        getGitHubActionsConfig(
+          {framework: 'rn', unitTesting: true, detox: true},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
   });
 });

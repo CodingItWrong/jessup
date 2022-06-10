@@ -581,10 +581,15 @@ function initializeRN(answers) {
   "runnerConfig": "e2e/config.json",
   "skipLegacyWorkersInjection": true,
   "apps": {
-    "ios": {
+    "ios.debug": {
       "type": "ios.app",
       "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/${answers.projectName}.app",
       "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
+    },
+    "ios.release": {
+      "type": "ios.app",
+      "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/${answers.projectName}.app",
+      "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Release -sdk iphonesimulator -derivedDataPath ios/build"
     },
     "android": {
       "type": "android.apk",
@@ -606,9 +611,13 @@ function initializeRN(answers) {
     }
   },
   "configurations": {
-    "ios": {
+    "ios.sim.debug": {
       "device": "simulator",
-      "app": "ios"
+      "app": "ios.debug"
+    },
+    "ios.sim.release": {
+      "device": "simulator",
+      "app": "ios.release"
     },
     "android": {
       "device": "emulator",
