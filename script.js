@@ -238,8 +238,9 @@ function initializeExpo(answers) {
 
   writeGitHubActionsConfig(answers);
 
-  displayMessage(
-    `
+  if (answers.unitTesting) {
+    displayMessage(
+      `
 Your app is almost ready! To finish setup, add the following to package.json:
 
 "jest": {
@@ -249,7 +250,8 @@ Your app is almost ready! To finish setup, add the following to package.json:
 },
 
 `
-  );
+    );
+  }
 }
 
 function initializeNext(answers) {
@@ -672,8 +674,9 @@ function initializeRN(answers) {
 
   writeGitHubActionsConfig(answers);
 
-  displayMessage(
-    `
+  if (answers.unitTesting) {
+    displayMessage(
+      `
 Your app is almost ready! To finish setup, update the "jest" key of your package.json to the following:
 
 "jest": {
@@ -681,7 +684,8 @@ Your app is almost ready! To finish setup, update the "jest" key of your package
   "setupFilesAfterEnv": ["./jest-setup-after-env.js"]
 }
 `
-  );
+    );
+  }
 }
 
 function addCypress(answers, {port}) {
