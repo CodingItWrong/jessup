@@ -528,7 +528,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig react native can generate a config without unit testing 1`] = `
+exports[`getGitHubActionsConfig react native can generate a config without any testing 1`] = `
 "name: Test
 on: [push]
 
