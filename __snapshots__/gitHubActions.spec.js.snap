@@ -33,7 +33,7 @@ jobs:
         run: yarn lint
 
       - name: Cypress Tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           start: yarn start
           wait-on: 'http://localhost:3000'
@@ -104,7 +104,7 @@ jobs:
         run: yarn lint
 
       - name: Cypress Tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           start: yarn start
           wait-on: 'http://localhost:3000'
@@ -181,7 +181,7 @@ jobs:
         run: yarn global add sharp-cli
 
       - name: Cypress Tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           start: yarn web
           wait-on: 'http://localhost:19006'
@@ -224,7 +224,7 @@ jobs:
         run: yarn global add sharp-cli
 
       - name: Cypress Tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           start: yarn web
           wait-on: 'http://localhost:19006'
@@ -326,7 +326,7 @@ jobs:
         run: yarn lint
 
       - name: Cypress Tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           start: yarn dev
           wait-on: 'http://localhost:3000'

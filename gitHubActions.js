@@ -51,7 +51,7 @@ ${includeIf(
     answers.cypress,
     `
       - name: Cypress Tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           start: yarn ${framework.devServerScript ?? 'start'}
           wait-on: 'http://localhost:${framework.devServerPort}'
