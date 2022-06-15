@@ -268,6 +268,61 @@ function initializeNext(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  if (answers.unitTesting) {
+    group('Add Jest', () => {
+      addNpmPackages({
+        dev: true,
+        packages: ['jest', 'jest-environment-jsdom'],
+      });
+      setScript('test', 'jest --watchAll');
+    });
+    group('Add RTL and jest-dom', () => {
+      addNpmPackages({
+        dev: true,
+        packages: ['@testing-library/jest-dom', '@testing-library/react'],
+      });
+      writeFile(
+        'jest-setup-after-env.js',
+        `
+import '@testing-library/jest-dom';
+        `
+      );
+      writeFile(
+        'jest.config.js',
+        `
+const nextJest = require('next/jest')
+
+const createJestConfig = nextJest({dir: './'})
+
+const customJestConfig = {
+  moduleDirectories: ['node_modules', '<rootDir>/'],
+  testEnvironment: 'jest-environment-jsdom',
+  setupFilesAfterEnv: ['<rootDir>/jest-setup-after-env.js'],
+}
+
+module.exports = createJestConfig(customJestConfig)
+        `
+      );
+    });
+    group('Add sample RTL test', () => {
+      writeFile(
+        'pages/index.spec.js',
+        `
+import {render, screen} from '@testing-library/react';
+import Home from './index'
+
+describe('Home', () => {
+  it('renders', () => {
+    render(<Home />);
+
+    expect(screen.getByText('Next.js!')).toBeInTheDocument();
+  });
+});
+      `
+      );
+    });
+  }
+
   addCypress(answers, {port: 3000});
 
   group('Configure linting and formatting', () => {
@@ -277,6 +332,7 @@ function initializeNext(answers) {
         'eslint-config-prettier',
         'eslint-plugin-prettier',
         'prettier',
+        ...(answers.unitTesting ? ['eslint-plugin-jest'] : []),
         ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
       ],
     });
@@ -302,7 +358,19 @@ function initializeNext(answers) {
               "warn",
               {"ignoreDeclarationSort": true, "ignoreMemberSort": false}
             ] // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
-          }
+          }${includeIf(
+            answers.unitTesting,
+            `,
+          "overrides": [
+            {
+              "files": ["**/*.spec.js"],
+              "plugins": ["jest"],
+              "env": {"jest/globals": true},
+              "extends": ["plugin:jest/recommended"]
+            }
+          ]
+            `
+          )}
         }
       `
     );
@@ -867,7 +935,6 @@ const FRAMEWORKS = [
   {
     value: 'next',
     name: 'Next',
-    skipUnitTestingQuestion: true,
     cypressAvailable: true,
     devServerScript: 'dev',
     devServerPort: 3000,
