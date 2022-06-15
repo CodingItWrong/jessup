@@ -1,7 +1,7 @@
 {
   "name": "jessup",
   "main": "kernel.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Josh Justice <me@codingitwrong.com>",
   "license": "MIT",
   "bin": "./kernel.js",
