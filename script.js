@@ -697,11 +697,26 @@ function addCypress(answers, {port}) {
       });
       setScript('cypress', 'cypress open');
       writeFile(
-        'cypress.json',
-        `{
-  "baseUrl": "http://localhost:${port}",
-  "video": false
-}
+        'cypress.config.js',
+        `const {defineConfig} = require('cypress');
+
+module.exports = defineConfig({
+  video: false,
+  e2e: {
+    baseUrl: 'http://localhost:${port}',
+  },
+});
+`
+      );
+      mkdir('cypress/support');
+      writeFile(
+        'cypress/support/e2e.js',
+        `import './commands';
+`
+      );
+      writeFile(
+        'cypress/support/commands.js',
+        `
 `
       );
     });
