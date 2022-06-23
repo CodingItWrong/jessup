@@ -21,7 +21,6 @@ Features it initializes in the projects:
 
 This project is early-stage. Upcoming work I would like to do:
 
-- [ ] Remove the need for manually editing files to finish project setup for some frameworks
 - [ ] Better error output
 - [ ] General robustness
 - [ ] Ability to request dry-run mode as an interactive option instead of a hard-coded flag
