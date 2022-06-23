@@ -170,7 +170,7 @@ function initializeDocusaurus(answers) {
   writeGitHubActionsConfig(answers);
 }
 
-function initializeExpo(answers) {
+async function initializeExpo(answers) {
   group(
     'Initialize project',
     () => {
@@ -192,7 +192,7 @@ function initializeExpo(answers) {
       });
       setScript('test', 'jest --watchAll');
     });
-    group('Add RNTL and jest-native', () => {
+    await groupAsync('Add RNTL and jest-native', async () => {
       addNpmPackages({
         dev: true,
         packages: [
@@ -206,7 +206,10 @@ function initializeExpo(answers) {
           import '@testing-library/jest-native/extend-expect';
         `
       );
-      // TODO: configure jest setup after env
+      await modifyJson(
+        'package.json',
+        '.jest = {"preset": "jest-expo", "modulePathIgnorePatterns": ["cypress"], "setupFilesAfterEnv": ["./jest-setup-after-env.js"]}'
+      );
     });
   }
 
@@ -239,21 +242,6 @@ function initializeExpo(answers) {
   });
 
   writeGitHubActionsConfig(answers);
-
-  if (answers.unitTesting) {
-    displayMessage(
-      `
-Your app is almost ready! To finish setup, add the following to package.json:
-
-"jest": {
-  "preset": "jest-expo",
-  "modulePathIgnorePatterns": ["cypress"],
-  "setupFilesAfterEnv": ["./jest-setup-after-env.js"]
-},
-
-`
-    );
-  }
 }
 
 function initializeNext(answers) {
