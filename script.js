@@ -7,13 +7,12 @@ const {
   group,
   groupAsync,
   mkdir,
+  modifyJson,
   setScript,
   writeFile,
 } = require('./commands');
 const {getReadmeContents} = require('./readme');
 const {getGitHubActionsConfig} = require('./gitHubActions');
-const jq = require('node-jq');
-const prettier = require('prettier');
 
 function frameworkForAnswers(answers) {
   return FRAMEWORKS.find(f => f.value === answers.framework);
@@ -639,16 +638,10 @@ async function initializeRN(answers) {
           import '@testing-library/jest-native/extend-expect';
         `
       );
-
-      const packageJsonData = await jq.run(
-        '.jest.setupFilesAfterEnv = ["./jest-setup-after-env.js"]',
+      await modifyJson(
         'package.json',
-        {output: 'string'}
+        '.jest.setupFilesAfterEnv = ["./jest-setup-after-env.js"]'
       );
-      const formattedPackageJsonData = prettier.format(packageJsonData, {
-        parser: 'json',
-      });
-      writeFile('package.json', formattedPackageJsonData);
     });
   }
 
