@@ -11,6 +11,7 @@ const {
 } = require('./commands');
 const {getReadmeContents} = require('./readme');
 const {getGitHubActionsConfig} = require('./gitHubActions');
+const jq = require('node-jq');
 
 function frameworkForAnswers(answers) {
   return FRAMEWORKS.find(f => f.value === answers.framework);
@@ -637,6 +638,15 @@ function initializeRN(answers) {
         `
       );
       // TODO: configure jest setup after env
+      jq.run(
+        '.jest.setupFilesAfterEnv = ["./jest-setup-after-env.js"]',
+        'package.json',
+        {output: 'string'}
+      ).then(data => {
+        console.log('JQ OUTPUT', data);
+        // TODO: see if I should await this
+        writeFile('package.json', data);
+      });
     });
   }
 

@@ -19,6 +19,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "inquirer": "^8.2.4"
+    "inquirer": "^8.2.4",
+    "node-jq": "^2.3.3"
   }
 }
