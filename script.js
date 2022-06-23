@@ -276,10 +276,14 @@ function initializeNext(answers) {
       });
       setScript('test', 'jest --watchAll');
     });
-    group('Add RTL and jest-dom', () => {
+    group('Add Testing Library packages', () => {
       addNpmPackages({
         dev: true,
-        packages: ['@testing-library/jest-dom', '@testing-library/react'],
+        packages: [
+          '@testing-library/jest-dom',
+          '@testing-library/react',
+          '@testing-library/user-event',
+        ],
       });
       writeFile(
         'jest-setup-after-env.js',
