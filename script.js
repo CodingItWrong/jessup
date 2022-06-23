@@ -12,6 +12,7 @@ const {
 const {getReadmeContents} = require('./readme');
 const {getGitHubActionsConfig} = require('./gitHubActions');
 const jq = require('node-jq');
+const prettier = require('prettier');
 
 function frameworkForAnswers(answers) {
   return FRAMEWORKS.find(f => f.value === answers.framework);
@@ -643,9 +644,8 @@ function initializeRN(answers) {
         'package.json',
         {output: 'string'}
       ).then(data => {
-        console.log('JQ OUTPUT', data);
-        // TODO: see if I should await this
-        writeFile('package.json', data);
+        const formattedData = prettier.format(data, {parser: 'json'});
+        writeFile('package.json', formattedData);
       });
     });
   }
