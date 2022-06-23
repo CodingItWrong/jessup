@@ -5,7 +5,7 @@ const {questions, initialize} = require('./script');
 
 async function run() {
   const answers = await inquirer.prompt(questions);
-  initialize(answers);
+  await initialize(answers);
 }
 
 run();

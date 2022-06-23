@@ -46,6 +46,21 @@ function group(message, stepImplementation, {commit = true} = {}) {
   console.log('');
 }
 
+async function groupAsync(
+  message,
+  stepImplementationAsync,
+  {commit = true} = {}
+) {
+  console.log(message.toUpperCase());
+  console.log('');
+  await stepImplementationAsync();
+  if (commit) {
+    command('git add .');
+    command(`git commit -m "${message}"`);
+  }
+  console.log('');
+}
+
 function setScript(scriptName, implementation) {
   command(`npm set-script ${scriptName} "${implementation}"`);
 }
@@ -77,6 +92,7 @@ module.exports = {
   command,
   displayMessage,
   group,
+  groupAsync,
   mkdir,
   setScript,
   writeFile,

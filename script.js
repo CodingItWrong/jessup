@@ -5,6 +5,7 @@ const {
   command,
   displayMessage,
   group,
+  groupAsync,
   mkdir,
   setScript,
   writeFile,
@@ -612,7 +613,7 @@ function initializeNodeWithBabel(answers) {
   writeGitHubActionsConfig(answers);
 }
 
-function initializeRN(answers) {
+async function initializeRN(answers) {
   group('Initialize project', () => {
     command(`npx react-native init ${answers.projectName}`);
     cd(answers.projectName);
@@ -624,7 +625,7 @@ function initializeRN(answers) {
   });
 
   if (answers.unitTesting) {
-    group('Add RNTL and jest-native', () => {
+    await groupAsync('Add RNTL and jest-native', async () => {
       addNpmPackages({
         dev: true,
         packages: [
@@ -638,15 +639,16 @@ function initializeRN(answers) {
           import '@testing-library/jest-native/extend-expect';
         `
       );
-      // TODO: configure jest setup after env
-      jq.run(
+
+      const packageJsonData = await jq.run(
         '.jest.setupFilesAfterEnv = ["./jest-setup-after-env.js"]',
         'package.json',
         {output: 'string'}
-      ).then(data => {
-        const formattedData = prettier.format(data, {parser: 'json'});
-        writeFile('package.json', formattedData);
+      );
+      const formattedPackageJsonData = prettier.format(packageJsonData, {
+        parser: 'json',
       });
+      writeFile('package.json', formattedPackageJsonData);
     });
   }
 
@@ -755,19 +757,6 @@ function initializeRN(answers) {
   });
 
   writeGitHubActionsConfig(answers);
-
-  if (answers.unitTesting) {
-    displayMessage(
-      `
-Your app is almost ready! To finish setup, update the "jest" key of your package.json to the following:
-
-"jest": {
-  "preset": "react-native",
-  "setupFilesAfterEnv": ["./jest-setup-after-env.js"]
-}
-`
-    );
-  }
 }
 
 function addCypress(answers, {port}) {
