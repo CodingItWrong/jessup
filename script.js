@@ -3,7 +3,6 @@ const {
   addNpmPackages,
   cd,
   command,
-  displayMessage,
   group,
   groupAsync,
   mkdir,
