@@ -2,7 +2,6 @@ const {execSync} = require('child_process');
 const fs = require('fs');
 const {chdir} = require('process');
 const jq = require('node-jq');
-const prettier = require('prettier');
 
 const DRY_RUN = false;
 
@@ -64,10 +63,7 @@ async function groupAsync(
 }
 
 async function modifyJson(jsonFile, query) {
-  const jsonData = await jq.run(query, jsonFile, {output: 'string'});
-  const formattedJsonData = prettier.format(jsonData, {
-    parser: 'json',
-  });
+  const formattedJsonData = await jq.run(query, jsonFile);
   writeFile(jsonFile, formattedJsonData);
 }
 
