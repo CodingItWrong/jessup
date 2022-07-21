@@ -1,3 +1,4 @@
+const dedent = require('dedent');
 const {includeIf} = require('./utils');
 const {
   addNpmPackages,
@@ -45,7 +46,7 @@ function initializeCra(answers) {
     });
     writeFile(
       '.eslintrc.js',
-      `
+      dedent`
         module.exports = {
           extends: ['react-app', 'prettier'],
           plugins: [
@@ -118,7 +119,7 @@ function initializeDocusaurus(answers) {
     });
     writeFile(
       '.eslintrc.js',
-      `
+      dedent`
         module.exports = {
           extends: [
             'eslint:recommended',
@@ -201,7 +202,7 @@ async function initializeExpo(answers) {
       });
       writeFile(
         'jest-setup-after-env.js',
-        `
+        dedent`
           import '@testing-library/jest-native/extend-expect';
         `
       );
@@ -276,41 +277,41 @@ function initializeNext(answers) {
       });
       writeFile(
         'jest-setup-after-env.js',
-        `
-import '@testing-library/jest-dom';
+        dedent`
+          import '@testing-library/jest-dom';
         `
       );
       writeFile(
         'jest.config.js',
-        `
-const nextJest = require('next/jest')
+        dedent`
+          const nextJest = require('next/jest')
 
-const createJestConfig = nextJest({dir: './'})
+          const createJestConfig = nextJest({dir: './'})
 
-const customJestConfig = {
-  moduleDirectories: ['node_modules', '<rootDir>/'],
-  testEnvironment: 'jest-environment-jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest-setup-after-env.js'],
-}
+          const customJestConfig = {
+            moduleDirectories: ['node_modules', '<rootDir>/'],
+            testEnvironment: 'jest-environment-jsdom',
+            setupFilesAfterEnv: ['<rootDir>/jest-setup-after-env.js'],
+          }
 
-module.exports = createJestConfig(customJestConfig)
+          module.exports = createJestConfig(customJestConfig)
         `
       );
     });
     group('Add sample RTL test', () => {
       writeFile(
         'pages/index.spec.js',
-        `
-import {render, screen} from '@testing-library/react';
-import Home from './index'
+        dedent`
+          import {render, screen} from '@testing-library/react';
+          import Home from './index'
 
-describe('Home', () => {
-  it('renders', () => {
-    render(<Home />);
+          describe('Home', () => {
+            it('renders', () => {
+              render(<Home />);
 
-    expect(screen.getByText('Next.js!')).toBeInTheDocument();
-  });
-});
+              expect(screen.getByText('Next.js!')).toBeInTheDocument();
+            });
+          });
       `
       );
     });
@@ -331,7 +332,7 @@ describe('Home', () => {
     });
     writeFile(
       '.eslintrc.json',
-      `
+      dedent`
         {
           "extends": [
             "eslint:recommended",
@@ -415,7 +416,7 @@ function initializeNode(answers) {
     });
     writeFile(
       '.eslintrc.js',
-      `
+      dedent`
         module.exports = {
           extends: ['eslint:recommended', 'plugin:prettier/recommended'],
           ${answers.unitTesting ? "plugins: ['jest']," : ''}
@@ -440,7 +441,7 @@ function initializeNode(answers) {
   group('Create sample files', () => {
     writeFile(
       'hello.js',
-      `
+      dedent`
         module.exports = function hello(name = 'World') {
           return \`Hello, \${name}!\`;
         }
@@ -450,7 +451,7 @@ function initializeNode(answers) {
     if (answers.unitTesting) {
       writeFile(
         'hello.spec.js',
-        `
+        dedent`
           const hello = require('./hello');
 
           describe('hello', () => {
@@ -512,7 +513,7 @@ function initializeNodeWithBabel(answers) {
     });
     writeFile(
       '.babelrc.js',
-      `
+      dedent`
         module.exports = {
           presets: [
             [
@@ -529,7 +530,7 @@ function initializeNodeWithBabel(answers) {
     );
     writeFile(
       '.eslintrc.js',
-      `
+      dedent`
         module.exports = {
           extends: ['eslint:recommended', 'plugin:prettier/recommended'],
           parser: '@babel/eslint-parser',
@@ -567,7 +568,7 @@ function initializeNodeWithBabel(answers) {
   group('Create sample files', () => {
     writeFile(
       'hello.js',
-      `
+      dedent`
         export default function hello(name = 'World') {
           return \`Hello, \${name}!\`;
         }
@@ -577,7 +578,7 @@ function initializeNodeWithBabel(answers) {
     if (answers.unitTesting) {
       writeFile(
         'hello.spec.js',
-        `
+        dedent`
           import hello from './hello';
 
           describe('hello', () => {
@@ -621,7 +622,7 @@ async function initializeRN(answers) {
       });
       writeFile(
         'jest-setup-after-env.js',
-        `
+        dedent`
           import '@testing-library/jest-native/extend-expect';
         `
       );
@@ -642,59 +643,61 @@ async function initializeRN(answers) {
     command('detox init -r jest');
     writeFile(
       '.detoxrc.json',
-      `{
-  "testRunner": "jest",
-  "runnerConfig": "e2e/config.json",
-  "skipLegacyWorkersInjection": true,
-  "apps": {
-    "ios.debug": {
-      "type": "ios.app",
-      "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/${answers.projectName}.app",
-      "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
-    },
-    "ios.release": {
-      "type": "ios.app",
-      "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/${answers.projectName}.app",
-      "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Release -sdk iphonesimulator -derivedDataPath ios/build"
-    },
-    "android": {
-      "type": "android.apk",
-      "binaryPath": "SPECIFY_PATH_TO_YOUR_APP_BINARY"
-    }
-  },
-  "devices": {
-    "simulator": {
-      "type": "ios.simulator",
-      "device": {
-        "type": "iPhone 13"
-      }
-    },
-    "emulator": {
-      "type": "android.emulator",
-      "device": {
-        "avdName": "Pixel_3a_API_30_x86"
-      }
-    }
-  },
-  "configurations": {
-    "ios.sim.debug": {
-      "device": "simulator",
-      "app": "ios.debug"
-    },
-    "ios.sim.release": {
-      "device": "simulator",
-      "app": "ios.release"
-    },
-    "android": {
-      "device": "emulator",
-      "app": "android"
-    }
-  }
-}`
+      dedent`
+        {
+          "testRunner": "jest",
+          "runnerConfig": "e2e/config.json",
+          "skipLegacyWorkersInjection": true,
+          "apps": {
+            "ios.debug": {
+              "type": "ios.app",
+              "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/${answers.projectName}.app",
+              "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
+            },
+            "ios.release": {
+              "type": "ios.app",
+              "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/${answers.projectName}.app",
+              "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Release -sdk iphonesimulator -derivedDataPath ios/build"
+            },
+            "android": {
+              "type": "android.apk",
+              "binaryPath": "SPECIFY_PATH_TO_YOUR_APP_BINARY"
+            }
+          },
+          "devices": {
+            "simulator": {
+              "type": "ios.simulator",
+              "device": {
+                "type": "iPhone 13"
+              }
+            },
+            "emulator": {
+              "type": "android.emulator",
+              "device": {
+                "avdName": "Pixel_3a_API_30_x86"
+              }
+            }
+          },
+          "configurations": {
+            "ios.sim.debug": {
+              "device": "simulator",
+              "app": "ios.debug"
+            },
+            "ios.sim.release": {
+              "device": "simulator",
+              "app": "ios.release"
+            },
+            "android": {
+              "device": "emulator",
+              "app": "android"
+            }
+          }
+        }
+      `
     );
     writeFile(
       'e2e/firstTest.e2e.js',
-      `
+      dedent`
         describe('Example', () => {
           beforeAll(async () => {
             await device.launchApp();
@@ -749,21 +752,23 @@ function addCypress(answers, {port}) {
       setScript('cypress', 'cypress open');
       writeFile(
         'cypress.config.js',
-        `const {defineConfig} = require('cypress');
+        dedent`
+          const {defineConfig} = require('cypress');
 
-module.exports = defineConfig({
-  video: false,
-  e2e: {
-    baseUrl: 'http://localhost:${port}',
-  },
-});
-`
+          module.exports = defineConfig({
+            video: false,
+            e2e: {
+              baseUrl: 'http://localhost:${port}',
+            },
+          });
+        `
       );
       mkdir('cypress/support');
       writeFile(
         'cypress/support/e2e.js',
-        `import './commands';
-`
+        dedent`
+          import './commands';
+        `
       );
       writeFile(
         'cypress/support/commands.js',
@@ -777,7 +782,7 @@ module.exports = defineConfig({
 function writePrettierConfig({trailingComma = 'all'} = {}) {
   writeFile(
     '.prettierrc.js',
-    `
+    dedent`
       module.exports = {
         arrowParens: 'avoid',
         bracketSpacing: false,
@@ -791,7 +796,7 @@ function writePrettierConfig({trailingComma = 'all'} = {}) {
 function writeReactNativeEslintConfig(answers) {
   writeFile(
     '.eslintrc.js',
-    `
+    dedent`
       module.exports = {
         root: true,
         extends: '@react-native-community',
@@ -853,7 +858,7 @@ function writeGitHubActionsConfig(answers) {
 function writeSampleReactNativeFiles(answers) {
   writeFile(
     'App.js',
-    `
+    dedent`
       import React from 'react';
       import {SafeAreaView, StatusBar, Text} from 'react-native';
 
@@ -873,7 +878,7 @@ function writeSampleReactNativeFiles(answers) {
   if (answers.unitTesting) {
     writeFile(
       'App.spec.js',
-      `
+      dedent`
         import {render, screen} from '@testing-library/react-native';
         import React from 'react';
         import App from './App';
