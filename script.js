@@ -188,7 +188,7 @@ async function initializeExpo(answers) {
     group('Add Jest', () => {
       addNpmPackages({
         dev: true,
-        packages: ['jest@^26', 'jest-expo'],
+        packages: ['jest@^26', 'jest-expo', '@types/jest'],
       });
       setScript('test', 'jest --watchAll');
     });
@@ -262,7 +262,7 @@ function initializeNext(answers) {
     group('Add Jest', () => {
       addNpmPackages({
         dev: true,
-        packages: ['jest', 'jest-environment-jsdom'],
+        packages: ['jest', 'jest-environment-jsdom', '@types/jest'],
       });
       setScript('test', 'jest --watchAll');
     });
@@ -397,7 +397,7 @@ function initializeNode(answers) {
     group('Add Jest', () => {
       addNpmPackages({
         dev: true,
-        packages: ['jest'],
+        packages: ['jest', '@types/jest'],
       });
       setScript('test', 'jest --watchAll');
     });
@@ -489,7 +489,7 @@ function initializeNodeWithBabel(answers) {
     group('Add Jest', () => {
       addNpmPackages({
         dev: true,
-        packages: ['jest'],
+        packages: ['jest', '@types/jest'],
       });
       setScript('test', 'jest --watchAll');
     });
