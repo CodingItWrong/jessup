@@ -441,11 +441,10 @@ function initializeNode(answers) {
   group('Create sample files', () => {
     writeFile(
       'hello.js',
-      dedent`
-        module.exports = function hello(name = 'World') {
-          return \`Hello, \${name}!\`;
-        }
-      `
+      `module.exports = function hello(name = 'World') {
+  return \`Hello, \${name}!\`;
+}
+`
     );
 
     if (answers.unitTesting) {
