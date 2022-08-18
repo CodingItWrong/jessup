@@ -610,6 +610,27 @@ async function initializeRN(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  group('Remove need for React import', () => {
+    // https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#manual-babel-setup
+    // https://aryan-mittal.medium.com/enable-the-new-jsx-transform-in-react-native-0-64-aea4f686a640
+    writeFile(
+      './.babel.config.js',
+      dedent`
+        module.exports = {
+          presets: ['module:metro-react-native-babel-preset'],
+          plugins: [
+            [
+              '@babel/plugin-transform-react-jsx',
+              {
+                runtime: 'automatic',
+              },
+            ],
+          ],
+        };
+      `
+    );
+  });
+
   if (answers.unitTesting) {
     await groupAsync('Add RNTL and jest-native', async () => {
       addNpmPackages({
@@ -809,7 +830,9 @@ function writeReactNativeEslintConfig(answers) {
           'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
           'no-duplicate-imports': 'error',
           quotes: ['error', 'single', {avoidEscape: true}], // single quote unless using interpolation
+          'react/jsx-uses-react': 'off',
           'react/no-unstable-nested-components': ['warn', {allowAsProps: true}], // allow function props that return components
+          'react/react-in-jsx-scope': 'off',
           'sort-imports': [
             'warn',
             {ignoreDeclarationSort: true, ignoreMemberSort: false},
@@ -859,6 +882,8 @@ function writeSampleReactNativeFiles(answers) {
   writeFile(
     'App.js',
     dedent`
+      // SafeAreaView fails without React import in CLI for some reason
+      // eslint-disable-next-line no-unused-vars
       import React from 'react';
       import {SafeAreaView, StatusBar, Text} from 'react-native';
 
