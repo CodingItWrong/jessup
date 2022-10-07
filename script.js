@@ -64,6 +64,12 @@ function initializeCra(answers) {
               {ignoreDeclarationSort: true, ignoreMemberSort: false},
             ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
           },
+          overrides: [
+            {
+              files: ['src/**/*.spec.js'],
+              extends: ['react-app/jest'],
+            },
+          ],
         };
       `
     );
