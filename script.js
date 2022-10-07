@@ -202,6 +202,7 @@ async function initializeExpo(answers) {
       addNpmPackages({
         dev: true,
         packages: [
+          'eslint-plugin-testing-library',
           '@testing-library/react-native',
           '@testing-library/jest-native',
         ],
@@ -642,6 +643,7 @@ async function initializeRN(answers) {
       addNpmPackages({
         dev: true,
         packages: [
+          'eslint-plugin-testing-library',
           '@testing-library/react-native',
           '@testing-library/jest-native',
         ],
@@ -825,7 +827,10 @@ function writeReactNativeEslintConfig(answers) {
     dedent`
       module.exports = {
         root: true,
-        extends: '@react-native-community',
+        extends: [
+          '@react-native-community',
+          ${includeIf(answers.unitTesting, "'plugin:testing-library/react',")}
+        ],
         plugins: [
           'import',
           ${includeIf(answers.detox, "'detox',")}
@@ -916,7 +921,7 @@ function writeSampleReactNativeFiles(answers) {
         describe('App', () => {
           it('renders a hello message', () => {
             render(<App />);
-            expect(screen.queryByText('Hello, React Native!')).not.toBeNull();
+            expect(screen.getByText('Hello, React Native!')).toBeTruthy();
           });
         });
       `
