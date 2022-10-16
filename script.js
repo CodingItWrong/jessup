@@ -32,6 +32,13 @@ function initializeCra(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  group('Update User Event library', () => {
+    addNpmPackages({
+      dev: true,
+      packages: ['@testing-library/user-event'],
+    });
+  });
+
   addCypress(answers, {port: 3000});
 
   group('Configure linting and formatting', () => {
