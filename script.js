@@ -928,7 +928,7 @@ function writeSampleReactNativeFiles(answers) {
         describe('App', () => {
           it('renders a hello message', () => {
             render(<App />);
-            expect(screen.getByText('Hello, React Native!')).toBeTruthy();
+            expect(screen.getByText('Hello, React Native!')).toBeVisible();
           });
         });
       `
