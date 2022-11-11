@@ -581,11 +581,10 @@ function initializeNodeWithBabel(answers) {
   group('Create sample files', () => {
     writeFile(
       'hello.js',
-      dedent`
-        export default function hello(name = 'World') {
-          return \`Hello, \${name}!\`;
-        }
-      `
+      `export default function hello(name = 'World') {
+  return \`Hello, \${name}!\`;
+}
+`
     );
 
     if (answers.unitTesting) {
