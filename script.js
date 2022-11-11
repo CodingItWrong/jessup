@@ -575,7 +575,6 @@ function initializeNodeWithBabel(answers) {
     );
     writePrettierConfig();
     setScript('lint', 'eslint .');
-    command('yarn lint --fix');
   });
 
   group('Create sample files', () => {
