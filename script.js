@@ -187,7 +187,7 @@ async function initializeExpo(answers) {
   group(
     'Initialize project',
     () => {
-      command(`yarn create expo-app ${answers.projectName} -t blank`);
+      command(`npx create-expo-app ${answers.projectName} -t blank`);
       cd(answers.projectName);
     },
     {commit: false}
