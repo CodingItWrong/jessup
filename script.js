@@ -758,7 +758,6 @@ async function initializeRN(answers) {
     });
     writeReactNativeEslintConfig(answers);
     writePrettierConfig();
-    setScript('lint', 'eslint .');
   });
 
   group('Create sample files', () => {
