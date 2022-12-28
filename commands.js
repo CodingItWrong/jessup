@@ -68,7 +68,7 @@ async function modifyJson(jsonFile, query) {
 }
 
 function setScript(scriptName, implementation) {
-  command(`npm set-script ${scriptName} "${implementation}"`);
+  command(`npm pkg set "scripts.${scriptName}"="${implementation}"`);
 }
 
 function writeFile(path, contents) {
