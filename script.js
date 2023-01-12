@@ -831,10 +831,7 @@ function writeReactNativeEslintConfig(answers) {
     dedent`
       module.exports = {
         root: true,
-        extends: [
-          '@react-native-community',
-          ${includeIf(answers.unitTesting, "'plugin:testing-library/react',")}
-        ],
+        extends: ['@react-native-community'],
         plugins: [
           'import',
           ${includeIf(answers.detox, "'detox',")}
@@ -853,19 +850,26 @@ function writeReactNativeEslintConfig(answers) {
             {ignoreDeclarationSort: true, ignoreMemberSort: false},
           ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
         },
+        overrides: [
         ${includeIf(
           answers.detox,
-          `        overrides: [
-          {
+          `{
             files: ['*.e2e.js'],
             env: {
               'detox/detox': true,
               jest: true,
               'jest/globals': true,
             },
-          },
-        ],`
+          },`
         )}
+        ${includeIf(
+          answers.unitTesting,
+          `{
+            files: ['src/**/*.spec.js'],
+            extends: ['plugin:testing-library/react'],
+          },`
+        )}
+        ],
       };
     `
   );
