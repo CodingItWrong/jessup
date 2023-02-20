@@ -234,7 +234,7 @@ async function initializeExpo(answers) {
       dev: true,
       packages: [
         '@react-native-community/eslint-config',
-        'eslint@"^7.0"',
+        'eslint',
         'eslint-plugin-import',
         'prettier',
         ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
