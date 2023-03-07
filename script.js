@@ -201,7 +201,7 @@ async function initializeExpo(answers) {
     group('Add Jest', () => {
       addNpmPackages({
         dev: true,
-        packages: ['jest@^26', 'jest-expo', '@types/jest'],
+        packages: ['jest@^26', 'jest-expo'],
       });
       setScript('test', 'jest --watchAll');
     });
