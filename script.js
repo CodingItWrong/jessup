@@ -435,51 +435,50 @@ async function initializeExpo(answers) {
       mkdir(path);
       writeFile(
         `${path}/detox.yml`,
-        dedent`
-          name: Detox
-          on:
-            push:
-              branches:
-                - main
-            pull_request:
-              types: [opened, synchronize, reopened]
+        `name: Detox
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
-          jobs:
-            test:
-              runs-on: macos-12
-              steps:
-                - uses: actions/checkout@v3
+jobs:
+  test:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
 
-                - uses: actions/setup-node@v3
-                  with:
-                    node-version: 16 # expo-cli preferred
-                    cache: "yarn"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16 # expo-cli preferred
+          cache: "yarn"
 
-                - name: Setup EAS
-                  uses: expo/expo-github-action@v8
-                  with:
-                    eas-version: latest
-                    token: $\{\{ secrets.EXPO_TOKEN }}
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: \${{ secrets.EXPO_TOKEN }}
 
-                - name: Install Detox CLI
-                  run: |
-                    brew tap wix/brew
-                    brew install applesimutils
-                    npm install -g detox-cli
+      - name: Install Detox CLI
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+          npm install -g detox-cli
 
-                - name: Install dependencies
-                  run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-                - name: Build App for Detox
-                  run: detox build -c ios.sim.release
+      - name: Build App for Detox
+        run: detox build -c ios.sim.release
 
-                - uses: futureware-tech/simulator-action@v2
-                  with:
-                    model: "iPhone 14"
+      - uses: futureware-tech/simulator-action@v2
+        with:
+          model: "iPhone 14"
 
-                - name: Run Detox
-                  run: detox test -c ios.sim.release
-        `
+      - name: Run Detox
+        run: detox test -c ios.sim.release
+`
       );
     });
   }
