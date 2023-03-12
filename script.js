@@ -759,6 +759,7 @@ async function initializeRN(answers) {
 
   group('Create sample files', () => {
     command('rm -fr __tests__');
+    command('rm -fr App.tsx'); // until the template is updated to be TS
     writeSampleReactNativeFiles(answers);
   });
 
