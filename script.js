@@ -726,7 +726,7 @@ async function initializeRN(answers) {
       `
     );
     writeFile(
-      'e2e/firstTest.e2e.js',
+      'e2e/starter.test.js',
       dedent`
         describe('Example', () => {
           beforeAll(async () => {
