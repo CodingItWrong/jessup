@@ -481,6 +481,10 @@ jobs:
 `
       );
     });
+
+    group('Set up EAS project', () => {
+      command('detox build -c ios.sim.release');
+    });
   }
 }
 
