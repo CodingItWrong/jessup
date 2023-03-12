@@ -815,6 +815,7 @@ function writePrettierConfig({trailingComma = 'all'} = {}) {
     dedent`
       module.exports = {
         arrowParens: 'avoid',
+        bracketSameLine: true,
         bracketSpacing: false,
         singleQuote: true,
         trailingComma: '${trailingComma}',
