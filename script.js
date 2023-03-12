@@ -667,7 +667,7 @@ async function initializeRN(answers) {
     group('Add Detox', () => {
       addNpmPackages({
         dev: true,
-        packages: ['detox', 'jest@^27', 'babel-jest@^27'],
+        packages: ['detox'],
       });
     });
     command('detox init -r jest');
