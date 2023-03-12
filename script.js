@@ -224,6 +224,179 @@ async function initializeExpo(answers) {
     });
   }
 
+  if (answers.detox) {
+    group('Add Detox', () => {
+      addNpmPackages({dev: true, packages: ['detox']});
+    });
+    command('detox init -r jest');
+    writeFile(
+      'e2e/jest.config.js',
+      dedent`
+        /** @type {import('@jest/types').Config.InitialOptions} */
+        module.exports = {
+          rootDir: '..',
+          testMatch: ['<rootDir>/e2e/**/*.e2e.js'],
+          testTimeout: 120000,
+          maxWorkers: 1,
+          globalSetup: 'detox/runners/jest/globalSetup',
+          globalTeardown: 'detox/runners/jest/globalTeardown',
+          reporters: ['detox/runners/jest/reporter'],
+          testEnvironment: 'detox/runners/jest/testEnvironment',
+          verbose: true,
+        };
+      `
+    );
+    writeFile(
+      '.detoxrc.js',
+      dedent`
+        /** @type {Detox.DetoxConfig} */
+        module.exports = {
+          testRunner: {
+            args: {
+              '$0': 'jest',
+              config: 'e2e/jest.config.js'
+            },
+            jest: {
+              setupTimeout: 120000
+            }
+          },
+          apps: {
+            'ios.debug': {
+              type: 'ios.app',
+              binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/YOUR_APP.app',
+              build: 'xcodebuild -workspace ios/YOUR_APP.xcworkspace -scheme YOUR_APP -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build'
+            },
+            'ios.release': {
+              type: 'ios.app',
+              binaryPath: '${answers.projectName.replaceAll('-', '')}.app',
+              build: 'eas build --local --profile development-detox --platform ios && tar -xvzf build-*.tar.gz && rm build-*.tar.gz'
+            },
+            'android.debug': {
+              type: 'android.apk',
+              binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
+              build: 'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
+              reversePorts: [
+                8081
+              ]
+            },
+            'android.release': {
+              type: 'android.apk',
+              binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
+              build: 'cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release'
+            }
+          },
+          devices: {
+            simulator: {
+              type: 'ios.simulator',
+              device: {
+                type: 'iPhone 14'
+              }
+            },
+            attached: {
+              type: 'android.attached',
+              device: {
+                adbName: '.*'
+              }
+            },
+            emulator: {
+              type: 'android.emulator',
+              device: {
+                avdName: 'Pixel_3a_API_30_x86'
+              }
+            }
+          },
+          configurations: {
+            'ios.sim.debug': {
+              device: 'simulator',
+              app: 'ios.debug'
+            },
+            'ios.sim.release': {
+              device: 'simulator',
+              app: 'ios.release'
+            },
+            'android.att.debug': {
+              device: 'attached',
+              app: 'android.debug'
+            },
+            'android.att.release': {
+              device: 'attached',
+              app: 'android.release'
+            },
+            'android.emu.debug': {
+              device: 'emulator',
+              app: 'android.debug'
+            },
+            'android.emu.release': {
+              device: 'emulator',
+              app: 'android.release'
+            }
+          }
+        };
+      `
+    );
+    writeFile(
+      'eas.json',
+      dedent`
+        {
+          "cli": {
+            "version": ">= 3.3.2",
+            "promptToConfigurePushNotifications": false
+          },
+          "build": {
+            "development": {
+              "developmentClient": true,
+              "distribution": "internal",
+              "channel": "development"
+            },
+            "development-simulator": {
+              "developmentClient": true,
+              "distribution": "internal",
+              "ios": {
+                "simulator": true
+              }
+            },
+            "development-detox": {
+              "distribution": "internal",
+              "channel": "development",
+              "ios": {
+                "simulator": true
+              }
+            },
+            "preview": {
+              "distribution": "internal",
+              "channel": "preview"
+            },
+            "production": {
+              "channel": "production"
+            }
+          },
+          "submit": {
+            "production": {}
+          }
+        }
+      `
+    );
+    command('rm e2e/starter.test.js');
+    writeFile(
+      'e2e/starter.e2e.js',
+      dedent`
+        describe('Example', () => {
+          beforeAll(async () => {
+            await device.launchApp();
+          });
+
+          beforeEach(async () => {
+            await device.reloadReactNative();
+          });
+
+          it('should say hello', async () => {
+            await expect(element(by.text('Hello, React Native!'))).toBeVisible();
+          });
+        });
+      `
+    );
+  }
+
   addCypress(answers, {port: 19006});
 
   group('Configure linting and formatting', () => {
@@ -235,8 +408,10 @@ async function initializeExpo(answers) {
         'eslint-plugin-import',
         'prettier',
         ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
+        ...(answers.detox ? ['eslint-plugin-detox'] : []),
       ],
     });
+
     writeReactNativeEslintConfig(answers);
     writePrettierConfig();
     setScript('lint', 'eslint .');
@@ -253,6 +428,61 @@ async function initializeExpo(answers) {
   });
 
   writeGitHubActionsConfig(answers);
+
+  if (answers.detox && answers.gitHubActions) {
+    group('Configure GitHub Action for Detox', () => {
+      const path = '.github/workflows';
+      mkdir(path);
+      writeFile(
+        `${path}/detox.yml`,
+        dedent`
+          name: Detox
+          on:
+            push:
+              branches:
+                - main
+            pull_request:
+              types: [opened, synchronize, reopened]
+
+          jobs:
+            test:
+              runs-on: macos-12
+              steps:
+                - uses: actions/checkout@v3
+
+                - uses: actions/setup-node@v3
+                  with:
+                    node-version: 16 # expo-cli preferred
+                    cache: "yarn"
+
+                - name: Setup EAS
+                  uses: expo/expo-github-action@v8
+                  with:
+                    eas-version: latest
+                    token: $\{\{ secrets.EXPO_TOKEN }}
+
+                - name: Install Detox CLI
+                  run: |
+                    brew tap wix/brew
+                    brew install applesimutils
+                    npm install -g detox-cli
+
+                - name: Install dependencies
+                  run: yarn install --frozen-lockfile
+
+                - name: Build App for Detox
+                  run: detox build -c ios.sim.release
+
+                - uses: futureware-tech/simulator-action@v2
+                  with:
+                    model: "iPhone 14"
+
+                - name: Run Detox
+                  run: detox test -c ios.sim.release
+        `
+      );
+    });
+  }
 }
 
 function initializeNext(answers) {
@@ -853,7 +1083,7 @@ function writeReactNativeEslintConfig(answers) {
         ${includeIf(
           answers.detox,
           `{
-            files: ['e2e/*.test.js'],
+            files: ['e2e/**/*.e2e.js'],
             env: {
               'detox/detox': true,
               jest: true,
@@ -961,6 +1191,7 @@ const FRAMEWORKS = [
     devServerScript: 'web',
     devServerPort: 19006,
     initializer: initializeExpo,
+    detoxAvailable: true,
   },
   {
     value: 'next',
@@ -1014,15 +1245,15 @@ const questions = [
   },
   {
     type: 'confirm',
-    name: 'cypress',
-    message: 'Configure E2E web testing with Cypress?',
-    when: answers => frameworkForAnswers(answers).cypressAvailable,
-  },
-  {
-    type: 'confirm',
     name: 'detox',
     message: 'Configure E2E native testing with Detox?',
     when: answers => frameworkForAnswers(answers).detoxAvailable,
+  },
+  {
+    type: 'confirm',
+    name: 'cypress',
+    message: 'Configure E2E web testing with Cypress?',
+    when: answers => frameworkForAnswers(answers).cypressAvailable,
   },
   {
     type: 'confirm',
