@@ -199,10 +199,7 @@ async function initializeExpo(answers) {
 
   if (answers.unitTesting) {
     group('Add Jest', () => {
-      addNpmPackages({
-        dev: true,
-        packages: ['jest@^26', 'jest-expo'],
-      });
+      command('npx expo install jest-expo jest');
       setScript('test', 'jest --watchAll');
     });
     await groupAsync('Add RNTL and jest-native', async () => {
