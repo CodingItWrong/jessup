@@ -2,7 +2,12 @@ const {includeIf} = require('./utils');
 
 function getGitHubActionsConfig(answers, framework) {
   return `name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
