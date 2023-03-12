@@ -2,7 +2,12 @@
 
 exports[`getGitHubActionsConfig cra can generate a config with cypress 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -42,7 +47,12 @@ jobs:
 
 exports[`getGitHubActionsConfig cra can generate a config without cypress 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -76,7 +86,12 @@ jobs:
 
 exports[`getGitHubActionsConfig docusaurus can generate a config with cypress 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -113,7 +128,12 @@ jobs:
 
 exports[`getGitHubActionsConfig docusaurus can generate a config without cypress 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -144,7 +164,12 @@ jobs:
 
 exports[`getGitHubActionsConfig expo can generate a config with both unit testing and cypress 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -190,7 +215,12 @@ jobs:
 
 exports[`getGitHubActionsConfig expo can generate a config with cypress 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -233,7 +263,12 @@ jobs:
 
 exports[`getGitHubActionsConfig expo can generate a config with unit testing 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -267,7 +302,12 @@ jobs:
 
 exports[`getGitHubActionsConfig expo can generate a config without any testing 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -298,7 +338,12 @@ jobs:
 
 exports[`getGitHubActionsConfig next can generate a config with cypress 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -335,7 +380,12 @@ jobs:
 
 exports[`getGitHubActionsConfig next can generate a config without cypress 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -366,7 +416,12 @@ jobs:
 
 exports[`getGitHubActionsConfig node can generate a config with unit testing 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -400,7 +455,12 @@ jobs:
 
 exports[`getGitHubActionsConfig node can generate a config without unit testing 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -431,7 +491,12 @@ jobs:
 
 exports[`getGitHubActionsConfig node with babel can generate a config with unit testing 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -465,7 +530,12 @@ jobs:
 
 exports[`getGitHubActionsConfig node with babel can generate a config without unit testing 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -494,112 +564,14 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig react native can generate a config with e2e testing 1`] = `
-"name: Test
-on: [push]
-
-jobs:
-  test:
-    name: Test
-    runs-on: macos-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo \\"::set-output name=dir::$(yarn cache dir)\\"
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: \${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: \${{ runner.os }}-yarn-\${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            \${{ runner.os }}-yarn-
-
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: ESLint
-        run: yarn lint
-
-      - name: Cache Pods
-        uses: actions/cache@v3
-        id: podcache
-        with:
-          path: ios/Pods
-          key: pods-\${{ hashFiles('**/Podfile.lock') }}
-
-      - name: Update Pods
-        if: steps.podcache.outputs.cache-hit != 'true'
-        run: |
-          gem update cocoapods xcodeproj
-          cd ios && pod install && cd ..
-
-      - run: brew tap wix/brew
-      - run: brew install applesimutils
-      - run: yarn detox build e2e --configuration ios.sim.release
-      - run: yarn detox test e2e --configuration ios.sim.release --cleanup --debug-synchronization 200
-"
-`;
-
-exports[`getGitHubActionsConfig react native can generate a config with unit and e2e testing 1`] = `
-"name: Test
-on: [push]
-
-jobs:
-  test:
-    name: Test
-    runs-on: macos-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo \\"::set-output name=dir::$(yarn cache dir)\\"
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: \${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: \${{ runner.os }}-yarn-\${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            \${{ runner.os }}-yarn-
-
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Unit Tests
-        run: yarn test --watchAll=false
-
-      - name: ESLint
-        run: yarn lint
-
-      - name: Cache Pods
-        uses: actions/cache@v3
-        id: podcache
-        with:
-          path: ios/Pods
-          key: pods-\${{ hashFiles('**/Podfile.lock') }}
-
-      - name: Update Pods
-        if: steps.podcache.outputs.cache-hit != 'true'
-        run: |
-          gem update cocoapods xcodeproj
-          cd ios && pod install && cd ..
-
-      - run: brew tap wix/brew
-      - run: brew install applesimutils
-      - run: yarn detox build e2e --configuration ios.sim.release
-      - run: yarn detox test e2e --configuration ios.sim.release --cleanup --debug-synchronization 200
-"
-`;
-
 exports[`getGitHubActionsConfig react native can generate a config with unit testing 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -633,7 +605,12 @@ jobs:
 
 exports[`getGitHubActionsConfig react native can generate a config without any testing 1`] = `
 "name: Test
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
