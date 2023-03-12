@@ -853,7 +853,7 @@ function writeReactNativeEslintConfig(answers) {
         ${includeIf(
           answers.detox,
           `{
-            files: ['*.e2e.js'],
+            files: ['e2e/*.test.js'],
             env: {
               'detox/detox': true,
               jest: true,
