@@ -898,68 +898,117 @@ async function initializeRN(answers) {
 
   if (answers.detox) {
     group('Add Detox', () => {
-      addNpmPackages({
-        dev: true,
-        packages: ['detox'],
-      });
+      addNpmPackages({dev: true, packages: ['detox']});
     });
     command('detox init -r jest');
     writeFile(
-      '.detoxrc.json',
+      'e2e/jest.config.js',
       dedent`
-        {
-          "testRunner": "jest",
-          "runnerConfig": "e2e/config.json",
-          "skipLegacyWorkersInjection": true,
-          "apps": {
-            "ios.debug": {
-              "type": "ios.app",
-              "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/${answers.projectName}.app",
-              "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
-            },
-            "ios.release": {
-              "type": "ios.app",
-              "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/${answers.projectName}.app",
-              "build": "xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Release -sdk iphonesimulator -derivedDataPath ios/build"
-            },
-            "android": {
-              "type": "android.apk",
-              "binaryPath": "SPECIFY_PATH_TO_YOUR_APP_BINARY"
-            }
-          },
-          "devices": {
-            "simulator": {
-              "type": "ios.simulator",
-              "device": {
-                "type": "iPhone 13"
-              }
-            },
-            "emulator": {
-              "type": "android.emulator",
-              "device": {
-                "avdName": "Pixel_3a_API_30_x86"
-              }
-            }
-          },
-          "configurations": {
-            "ios.sim.debug": {
-              "device": "simulator",
-              "app": "ios.debug"
-            },
-            "ios.sim.release": {
-              "device": "simulator",
-              "app": "ios.release"
-            },
-            "android": {
-              "device": "emulator",
-              "app": "android"
-            }
-          }
-        }
+        /** @type {import('@jest/types').Config.InitialOptions} */
+        module.exports = {
+          rootDir: '..',
+          testMatch: ['<rootDir>/e2e/**/*.e2e.js'],
+          testTimeout: 120000,
+          maxWorkers: 1,
+          globalSetup: 'detox/runners/jest/globalSetup',
+          globalTeardown: 'detox/runners/jest/globalTeardown',
+          reporters: ['detox/runners/jest/reporter'],
+          testEnvironment: 'detox/runners/jest/testEnvironment',
+          verbose: true,
+        };
       `
     );
     writeFile(
-      'e2e/starter.test.js',
+      '.detoxrc.js',
+      dedent`
+        /** @type {Detox.DetoxConfig} */
+        module.exports = {
+          testRunner: {
+            args: {
+              '$0': 'jest',
+              config: 'e2e/jest.config.js'
+            },
+            jest: {
+              setupTimeout: 120000
+            }
+          },
+          apps: {
+            'ios.debug': {
+              type: 'ios.app',
+              binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/${answers.projectName}.app',
+              build: 'xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build'
+            },
+            'ios.release': {
+              type: 'ios.app',
+              binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/${answers.projectName}.app',
+              build: 'xcodebuild -workspace ios/${answers.projectName}.xcworkspace -scheme ${answers.projectName} -configuration Release -sdk iphonesimulator -derivedDataPath ios/build'
+            },
+            'android.debug': {
+              type: 'android.apk',
+              binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
+              build: 'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
+              reversePorts: [
+                8081
+              ]
+            },
+            'android.release': {
+              type: 'android.apk',
+              binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
+              build: 'cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release'
+            }
+          },
+          devices: {
+            simulator: {
+              type: 'ios.simulator',
+              device: {
+                type: 'iPhone 14'
+              }
+            },
+            attached: {
+              type: 'android.attached',
+              device: {
+                adbName: '.*'
+              }
+            },
+            emulator: {
+              type: 'android.emulator',
+              device: {
+                avdName: 'Pixel_3a_API_30_x86'
+              }
+            }
+          },
+          configurations: {
+            'ios.sim.debug': {
+              device: 'simulator',
+              app: 'ios.debug'
+            },
+            'ios.sim.release': {
+              device: 'simulator',
+              app: 'ios.release'
+            },
+            'android.att.debug': {
+              device: 'attached',
+              app: 'android.debug'
+            },
+            'android.att.release': {
+              device: 'attached',
+              app: 'android.release'
+            },
+            'android.emu.debug': {
+              device: 'emulator',
+              app: 'android.debug'
+            },
+            'android.emu.release': {
+              device: 'emulator',
+              app: 'android.release'
+            }
+          }
+        };
+      `
+    );
+    command('rm e2e/starter.test.js');
+    writeFile(
+      'e2e/starter.e2e.js',
       dedent`
         describe('Example', () => {
           beforeAll(async () => {
@@ -1003,6 +1052,65 @@ async function initializeRN(answers) {
   });
 
   writeGitHubActionsConfig(answers);
+
+  if (answers.detox && answers.gitHubActions) {
+    group('Configure GitHub Action for Detox', () => {
+      const path = '.github/workflows';
+      mkdir(path);
+      writeFile(
+        `${path}/detox.yml`,
+        `name: Detox
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "yarn"
+
+      - name: Cache Pods dependencies
+        uses: actions/cache@v1
+        with:
+          path: ios/Pods
+          key: \${{ runner.OS }}-pods-cache-\${{ hashFiles('**/ios/Podfile.lock') }}
+          restore-keys: |
+            \${{ runner.OS }}-pods-cache-
+
+      - name: Install Detox CLI
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+          npm install -g detox-cli
+
+      - name: Install npm dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install iOS dependencies
+        run: npx pod-install
+
+      - name: Build App for Detox
+        run: detox build -c ios.sim.release
+
+      - uses: futureware-tech/simulator-action@v2
+        with:
+          model: "iPhone 14"
+
+      - name: Run Detox
+        run: detox test -c ios.sim.release
+`
+      );
+    });
+  }
 }
 
 function addCypress(answers, {port}) {
