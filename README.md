@@ -16,11 +16,13 @@ Features it initializes in the projects:
 - Linting and formatting: sets up ESLint integrated with Prettier
 - Unit Testing: optionally sets up Jest unit tests, with React Testing Library for React-dom and React Native Testing Library for RN
 - E2E Testing: Cypress for web and Detox for React Native CLI
+- CI: GitHub Actions for all of the above (iOS-only for Detox so far)
 
 ## Project Status
 
 This project is early-stage. Upcoming work I would like to do:
 
+- [ ] Detox Android on CI
 - [ ] Better error output
 - [ ] General robustness
 - [ ] Ability to request dry-run mode as an interactive option instead of a hard-coded flag
