@@ -227,11 +227,12 @@ async function initializeExpo(answers) {
   if (answers.detox) {
     group('Add Detox', () => {
       addNpmPackages({dev: true, packages: ['detox']});
+      command('detox init -r jest');
     });
-    command('detox init -r jest');
-    writeFile(
-      'e2e/jest.config.js',
-      dedent`
+    group('Configure Detox', () => {
+      writeFile(
+        'e2e/jest.config.js',
+        dedent`
         /** @type {import('@jest/types').Config.InitialOptions} */
         module.exports = {
           rootDir: '..',
@@ -245,10 +246,10 @@ async function initializeExpo(answers) {
           verbose: true,
         };
       `
-    );
-    writeFile(
-      '.detoxrc.js',
-      dedent`
+      );
+      writeFile(
+        '.detoxrc.js',
+        dedent`
         /** @type {Detox.DetoxConfig} */
         module.exports = {
           testRunner: {
@@ -333,10 +334,10 @@ async function initializeExpo(answers) {
           }
         };
       `
-    );
-    writeFile(
-      'eas.json',
-      dedent`
+      );
+      writeFile(
+        'eas.json',
+        dedent`
         {
           "cli": {
             "version": ">= 3.3.2",
@@ -375,11 +376,11 @@ async function initializeExpo(answers) {
           }
         }
       `
-    );
-    command('rm e2e/starter.test.js');
-    writeFile(
-      'e2e/starter.e2e.js',
-      dedent`
+      );
+      command('rm e2e/starter.test.js');
+      writeFile(
+        'e2e/starter.e2e.js',
+        dedent`
         describe('Example', () => {
           beforeAll(async () => {
             await device.launchApp();
@@ -394,7 +395,8 @@ async function initializeExpo(answers) {
           });
         });
       `
-    );
+      );
+    });
   }
 
   addCypress(answers, {port: 19006});
@@ -899,11 +901,12 @@ async function initializeRN(answers) {
   if (answers.detox) {
     group('Add Detox', () => {
       addNpmPackages({dev: true, packages: ['detox']});
+      command('detox init -r jest');
     });
-    command('detox init -r jest');
-    writeFile(
-      'e2e/jest.config.js',
-      dedent`
+    group('Configure Detox', () => {
+      writeFile(
+        'e2e/jest.config.js',
+        dedent`
         /** @type {import('@jest/types').Config.InitialOptions} */
         module.exports = {
           rootDir: '..',
@@ -917,10 +920,10 @@ async function initializeRN(answers) {
           verbose: true,
         };
       `
-    );
-    writeFile(
-      '.detoxrc.js',
-      dedent`
+      );
+      writeFile(
+        '.detoxrc.js',
+        dedent`
         /** @type {Detox.DetoxConfig} */
         module.exports = {
           testRunner: {
@@ -1005,11 +1008,11 @@ async function initializeRN(answers) {
           }
         };
       `
-    );
-    command('rm e2e/starter.test.js');
-    writeFile(
-      'e2e/starter.e2e.js',
-      dedent`
+      );
+      command('rm e2e/starter.test.js');
+      writeFile(
+        'e2e/starter.e2e.js',
+        dedent`
         describe('Example', () => {
           beforeAll(async () => {
             await device.launchApp();
@@ -1024,7 +1027,8 @@ async function initializeRN(answers) {
           });
         });
       `
-    );
+      );
+    });
   }
 
   group('Configure linting and formatting', () => {
