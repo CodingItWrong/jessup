@@ -197,11 +197,17 @@ async function initializeExpo(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
-  if (answers.unitTesting) {
+  if (answers.unitTesting || answers.detox) {
     group('Add Jest', () => {
       command('npx expo install jest-expo jest');
+    });
+  }
+
+  if (answers.unitTesting) {
+    group('Add unit test command', () => {
       setScript('test', 'jest --watchAll');
     });
+
     await groupAsync('Add RNTL and jest-native', async () => {
       addNpmPackages({
         dev: true,
