@@ -438,12 +438,13 @@ async function initializeExpo(answers) {
   writeGitHubActionsConfig(answers);
 
   if (answers.detox && answers.gitHubActions) {
-    group('Configure GitHub Action for Detox', () => {
+    group('Configure GitHub Actions for Detox', () => {
       const path = '.github/workflows';
       mkdir(path);
+
       writeFile(
-        `${path}/detox.yml`,
-        `name: Detox
+        `${path}/detox-trigger.yml`,
+        `name: Trigger Secure Detox Run
 on:
   push:
     branches:
@@ -453,8 +454,30 @@ on:
 
 jobs:
   test:
+    name: Test
+    runs-on: ubuntu-22.04
+    steps:
+      # just a placeholder to get a succeeding run
+      - uses: actions/checkout@v3
+`
+      );
+
+      writeFile(
+        `${path}/detox-secure.yml`,
+        `name: Secure Detox Run
+on:
+  workflow_run: # see https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
+    workflows: ["Trigger Secure Detox Run"]
+    types:
+      - completed
+
+jobs:
+  test:
     runs-on: macos-12
     steps:
+      # show this job's status on the original commit
+      - uses: haya14busa/action-workflow_run-status@v1
+
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
@@ -1155,6 +1178,18 @@ function addCypress(answers, {port}) {
         'cypress/support/commands.js',
         `
 `
+      );
+      mkdir('cypress/e2e');
+      writeFile(
+        'cypress/e2e/starter.cy.js',
+        dedent`
+          describe('starter spec', () => {
+            it('shows a hello message', () => {
+              cy.visit('/');
+              cy.contains('Hello, React Native!');
+            });
+          });
+        `
       );
     });
   }

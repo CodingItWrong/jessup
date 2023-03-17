@@ -12,12 +12,8 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: ${answers.detox ? 'macos-latest' : 'ubuntu-22.04'}
-    ${includeIf(
-      answers.detox,
-      `timeout-minutes: 60
-    `
-    )}steps:
+    runs-on: ubuntu-22.04
+    steps:
       - uses: actions/checkout@v3
 
       - name: Get yarn cache directory path
