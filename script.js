@@ -264,7 +264,7 @@ async function initializeExpo(answers) {
               config: 'e2e/jest.config.js'
             },
             jest: {
-              setupTimeout: 120000
+              setupTimeout: 600000 // 10 min
             }
           },
           apps: {
@@ -961,7 +961,7 @@ async function initializeRN(answers) {
               config: 'e2e/jest.config.js'
             },
             jest: {
-              setupTimeout: 120000
+              setupTimeout: 600000 // 10 min
             }
           },
           apps: {
