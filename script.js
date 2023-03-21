@@ -235,23 +235,10 @@ async function initializeExpo(answers) {
       addNpmPackages({dev: true, packages: ['detox']});
       command('detox init -r jest');
     });
-    group('Configure Detox', () => {
-      writeFile(
-        'e2e/jest.config.js',
-        dedent`
-        /** @type {import('@jest/types').Config.InitialOptions} */
-        module.exports = {
-          rootDir: '..',
-          testMatch: ['<rootDir>/e2e/**/*.e2e.js'],
-          testTimeout: 120000,
-          maxWorkers: 1,
-          globalSetup: 'detox/runners/jest/globalSetup',
-          globalTeardown: 'detox/runners/jest/globalTeardown',
-          reporters: ['detox/runners/jest/reporter'],
-          testEnvironment: 'detox/runners/jest/testEnvironment',
-          verbose: true,
-        };
-      `
+    await groupAsync('Configure Detox', async () => {
+      await modifyJson(
+        'package.json',
+        '.jest.modulePathIgnorePatterns = ["e2e"]'
       );
       writeFile(
         '.detoxrc.js',
@@ -383,9 +370,8 @@ async function initializeExpo(answers) {
         }
       `
       );
-      command('rm e2e/starter.test.js');
       writeFile(
-        'e2e/starter.e2e.js',
+        'e2e/starter.test.js',
         dedent`
         describe('Example', () => {
           beforeAll(async () => {
@@ -932,23 +918,10 @@ async function initializeRN(answers) {
       addNpmPackages({dev: true, packages: ['detox']});
       command('detox init -r jest');
     });
-    group('Configure Detox', () => {
-      writeFile(
-        'e2e/jest.config.js',
-        dedent`
-        /** @type {import('@jest/types').Config.InitialOptions} */
-        module.exports = {
-          rootDir: '..',
-          testMatch: ['<rootDir>/e2e/**/*.e2e.js'],
-          testTimeout: 120000,
-          maxWorkers: 1,
-          globalSetup: 'detox/runners/jest/globalSetup',
-          globalTeardown: 'detox/runners/jest/globalTeardown',
-          reporters: ['detox/runners/jest/reporter'],
-          testEnvironment: 'detox/runners/jest/testEnvironment',
-          verbose: true,
-        };
-      `
+    await groupAsync('Configure Detox', async () => {
+      await modifyJson(
+        'package.json',
+        '.jest.modulePathIgnorePatterns = ["e2e"]'
       );
       writeFile(
         '.detoxrc.js',
@@ -1038,9 +1011,8 @@ async function initializeRN(answers) {
         };
       `
       );
-      command('rm e2e/starter.test.js');
       writeFile(
-        'e2e/starter.e2e.js',
+        'e2e/starter.test.js',
         dedent`
         describe('Example', () => {
           beforeAll(async () => {
@@ -1239,7 +1211,7 @@ function writeReactNativeEslintConfig(answers) {
         ${includeIf(
           answers.detox,
           `{
-            files: ['e2e/**/*.e2e.js'],
+            files: ['e2e/**/*.test.js'],
             env: {
               'detox/detox': true,
               jest: true,
