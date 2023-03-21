@@ -12,7 +12,10 @@ const {
   writeFile,
 } = require('./commands');
 const {getReadmeContents} = require('./readme');
-const {getGitHubActionsConfig} = require('./gitHubActions');
+const {
+  getGitHubActionsConfig,
+  getDetoxGitHubActionsConfig,
+} = require('./gitHubActions');
 
 function frameworkForAnswers(answers) {
   return FRAMEWORKS.find(f => f.value === answers.framework);
@@ -240,6 +243,7 @@ async function initializeExpo(answers) {
         'package.json',
         '.jest.modulePathIgnorePatterns = ["e2e"]'
       );
+      const xcodeProjectName = answers.projectName.replaceAll('-', '');
       writeFile(
         '.detoxrc.js',
         dedent`
@@ -262,8 +266,8 @@ async function initializeExpo(answers) {
             },
             'ios.release': {
               type: 'ios.app',
-              binaryPath: '${answers.projectName.replaceAll('-', '')}.app',
-              build: 'eas build --local --profile development-detox --platform ios && tar -xvzf build-*.tar.gz && rm build-*.tar.gz'
+              binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/${xcodeProjectName}.app',
+              build: 'xcodebuild -workspace ios/${xcodeProjectName}.xcworkspace -scheme ${xcodeProjectName} -configuration Release -sdk iphonesimulator -derivedDataPath ios/build'
             },
             'android.debug': {
               type: 'android.apk',
@@ -329,48 +333,6 @@ async function initializeExpo(answers) {
       `
       );
       writeFile(
-        'eas.json',
-        dedent`
-        {
-          "cli": {
-            "version": ">= 3.3.2",
-            "promptToConfigurePushNotifications": false
-          },
-          "build": {
-            "development": {
-              "developmentClient": true,
-              "distribution": "internal",
-              "channel": "development"
-            },
-            "development-simulator": {
-              "developmentClient": true,
-              "distribution": "internal",
-              "ios": {
-                "simulator": true
-              }
-            },
-            "development-detox": {
-              "distribution": "internal",
-              "channel": "development",
-              "ios": {
-                "simulator": true
-              }
-            },
-            "preview": {
-              "distribution": "internal",
-              "channel": "preview"
-            },
-            "production": {
-              "channel": "production"
-            }
-          },
-          "submit": {
-            "production": {}
-          }
-        }
-      `
-      );
-      writeFile(
         'e2e/starter.test.js',
         dedent`
         describe('Example', () => {
@@ -423,86 +385,7 @@ async function initializeExpo(answers) {
 
   writeGitHubActionsConfig(answers);
 
-  if (answers.detox && answers.gitHubActions) {
-    group('Configure GitHub Actions for Detox', () => {
-      const path = '.github/workflows';
-      mkdir(path);
-
-      writeFile(
-        `${path}/detox-trigger.yml`,
-        `name: Trigger Secure Detox Run
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
-
-jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-22.04
-    steps:
-      # just a placeholder to get a succeeding run
-      - uses: actions/checkout@v3
-`
-      );
-
-      writeFile(
-        `${path}/detox-secure.yml`,
-        `name: Secure Detox Run
-on:
-  workflow_run: # see https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
-    workflows: ["Trigger Secure Detox Run"]
-    types:
-      - completed
-
-jobs:
-  test:
-    runs-on: macos-12
-    steps:
-      # show this job's status on the original commit
-      - uses: haya14busa/action-workflow_run-status@v1
-
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16 # expo-cli preferred
-          cache: "yarn"
-
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: \${{ secrets.EXPO_TOKEN }}
-
-      - name: Install Detox CLI
-        run: |
-          brew tap wix/brew
-          brew install applesimutils
-          npm install -g detox-cli
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build App for Detox
-        run: detox build -c ios.sim.release
-
-      - uses: futureware-tech/simulator-action@v2
-        with:
-          model: "iPhone 14"
-
-      - name: Run Detox
-        run: detox test -c ios.sim.release
-`
-      );
-    });
-
-    group('Set up EAS project', () => {
-      command('detox build -c ios.sim.release');
-    });
-  }
+  writeDetoxGitHubActionsConfig(answers);
 }
 
 function initializeNext(answers) {
@@ -1058,64 +941,7 @@ async function initializeRN(answers) {
 
   writeGitHubActionsConfig(answers);
 
-  if (answers.detox && answers.gitHubActions) {
-    group('Configure GitHub Action for Detox', () => {
-      const path = '.github/workflows';
-      mkdir(path);
-      writeFile(
-        `${path}/detox.yml`,
-        `name: Detox
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
-
-jobs:
-  test:
-    runs-on: macos-12
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "yarn"
-
-      - name: Cache Pods dependencies
-        uses: actions/cache@v1
-        with:
-          path: ios/Pods
-          key: \${{ runner.OS }}-pods-cache-\${{ hashFiles('**/ios/Podfile.lock') }}
-          restore-keys: |
-            \${{ runner.OS }}-pods-cache-
-
-      - name: Install Detox CLI
-        run: |
-          brew tap wix/brew
-          brew install applesimutils
-          npm install -g detox-cli
-
-      - name: Install npm dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Install iOS dependencies
-        run: npx pod-install
-
-      - name: Build App for Detox
-        run: detox build -c ios.sim.release
-
-      - uses: futureware-tech/simulator-action@v2
-        with:
-          model: "iPhone 14"
-
-      - name: Run Detox
-        run: detox test -c ios.sim.release
-`
-      );
-    });
-  }
+  writeDetoxGitHubActionsConfig(answers);
 }
 
 function addCypress(answers, {port}) {
@@ -1252,6 +1078,16 @@ function writeGitHubActionsConfig(answers) {
     mkdir(path);
     writeFile(`${path}/test.yml`, getGitHubActionsConfig(answers, framework));
   });
+}
+
+function writeDetoxGitHubActionsConfig(answers) {
+  if (answers.detox && answers.gitHubActions) {
+    group('Configure GitHub Action for Detox', () => {
+      const path = '.github/workflows';
+      mkdir(path);
+      writeFile(`${path}/detox.yml`, getDetoxGitHubActionsConfig(answers));
+    });
+  }
 }
 
 function writeSampleReactNativeFiles(answers) {

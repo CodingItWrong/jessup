@@ -1,6 +1,110 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getGitHubActionsConfig cra can generate a config with cypress 1`] = `
+exports[`gitHubActions module getDetoxGitHubActionsConfig can generate a config for Expo 1`] = `
+"name: Detox
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: \\"yarn\\"
+
+      - name: Cache Pods dependencies
+        uses: actions/cache@v1
+        with:
+          path: ios/Pods
+          key: \${{ runner.OS }}-pods-cache-\${{ hashFiles('**/ios/Podfile.lock') }}
+          restore-keys: |
+            \${{ runner.OS }}-pods-cache-
+
+      - name: Install npm dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Generate Xcode Project
+        run: npx expo prebuild -p ios
+      
+      - name: Install Detox CLI
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+          npm install -g detox-cli
+
+      - name: Build App for Detox
+        run: detox build -c ios.sim.release
+
+      - uses: futureware-tech/simulator-action@v2
+        with:
+          model: \\"iPhone 14\\"
+
+      - name: Run Detox
+        run: detox test -c ios.sim.release
+"
+`;
+
+exports[`gitHubActions module getDetoxGitHubActionsConfig can generate a config for RN CLI 1`] = `
+"name: Detox
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: \\"yarn\\"
+
+      - name: Cache Pods dependencies
+        uses: actions/cache@v1
+        with:
+          path: ios/Pods
+          key: \${{ runner.OS }}-pods-cache-\${{ hashFiles('**/ios/Podfile.lock') }}
+          restore-keys: |
+            \${{ runner.OS }}-pods-cache-
+
+      - name: Install npm dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install iOS dependencies
+        run: npx pod-install
+      
+      - name: Install Detox CLI
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+          npm install -g detox-cli
+
+      - name: Build App for Detox
+        run: detox build -c ios.sim.release
+
+      - uses: futureware-tech/simulator-action@v2
+        with:
+          model: \\"iPhone 14\\"
+
+      - name: Run Detox
+        run: detox test -c ios.sim.release
+"
+`;
+
+exports[`gitHubActions module getGitHubActionsConfig cra can generate a config with cypress 1`] = `
 "name: Test
 on:
   push:
@@ -45,7 +149,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig cra can generate a config without cypress 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig cra can generate a config without cypress 1`] = `
 "name: Test
 on:
   push:
@@ -84,7 +188,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig docusaurus can generate a config with cypress 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig docusaurus can generate a config with cypress 1`] = `
 "name: Test
 on:
   push:
@@ -126,7 +230,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig docusaurus can generate a config without cypress 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig docusaurus can generate a config without cypress 1`] = `
 "name: Test
 on:
   push:
@@ -162,7 +266,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig expo can generate a config with both unit testing and cypress 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig expo can generate a config with both unit testing and cypress 1`] = `
 "name: Test
 on:
   push:
@@ -213,7 +317,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig expo can generate a config with cypress 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig expo can generate a config with cypress 1`] = `
 "name: Test
 on:
   push:
@@ -261,7 +365,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig expo can generate a config with unit testing 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig expo can generate a config with unit testing 1`] = `
 "name: Test
 on:
   push:
@@ -300,7 +404,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig expo can generate a config without any testing 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig expo can generate a config without any testing 1`] = `
 "name: Test
 on:
   push:
@@ -336,7 +440,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig next can generate a config with cypress 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig next can generate a config with cypress 1`] = `
 "name: Test
 on:
   push:
@@ -378,7 +482,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig next can generate a config without cypress 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig next can generate a config without cypress 1`] = `
 "name: Test
 on:
   push:
@@ -414,82 +518,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig node can generate a config with unit testing 1`] = `
-"name: Test
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
-
-jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo \\"::set-output name=dir::$(yarn cache dir)\\"
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: \${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: \${{ runner.os }}-yarn-\${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            \${{ runner.os }}-yarn-
-
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Unit Tests
-        run: yarn test --watchAll=false
-
-      - name: ESLint
-        run: yarn lint
-"
-`;
-
-exports[`getGitHubActionsConfig node can generate a config without unit testing 1`] = `
-"name: Test
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
-
-jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo \\"::set-output name=dir::$(yarn cache dir)\\"
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: \${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: \${{ runner.os }}-yarn-\${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            \${{ runner.os }}-yarn-
-
-      - name: Install Dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: ESLint
-        run: yarn lint
-"
-`;
-
-exports[`getGitHubActionsConfig node with babel can generate a config with unit testing 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig node can generate a config with unit testing 1`] = `
 "name: Test
 on:
   push:
@@ -528,7 +557,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig node with babel can generate a config without unit testing 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig node can generate a config without unit testing 1`] = `
 "name: Test
 on:
   push:
@@ -564,7 +593,7 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig react native can generate a config with unit testing 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig node with babel can generate a config with unit testing 1`] = `
 "name: Test
 on:
   push:
@@ -603,7 +632,82 @@ jobs:
 "
 `;
 
-exports[`getGitHubActionsConfig react native can generate a config without any testing 1`] = `
+exports[`gitHubActions module getGitHubActionsConfig node with babel can generate a config without unit testing 1`] = `
+"name: Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo \\"::set-output name=dir::$(yarn cache dir)\\"
+
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: \${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: \${{ runner.os }}-yarn-\${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            \${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: ESLint
+        run: yarn lint
+"
+`;
+
+exports[`gitHubActions module getGitHubActionsConfig react native can generate a config with unit testing 1`] = `
+"name: Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo \\"::set-output name=dir::$(yarn cache dir)\\"
+
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: \${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: \${{ runner.os }}-yarn-\${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            \${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Unit Tests
+        run: yarn test --watchAll=false
+
+      - name: ESLint
+        run: yarn lint
+"
+`;
+
+exports[`gitHubActions module getGitHubActionsConfig react native can generate a config without any testing 1`] = `
 "name: Test
 on:
   push:

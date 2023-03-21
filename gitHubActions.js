@@ -60,4 +60,61 @@ ${includeIf(
   )}`;
 }
 
-module.exports = {getGitHubActionsConfig};
+function getDetoxGitHubActionsConfig(answers) {
+  return `name: Detox
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${answers.framework === 'expo' ? 16 : 18}
+          cache: "yarn"
+
+      - name: Cache Pods dependencies
+        uses: actions/cache@v1
+        with:
+          path: ios/Pods
+          key: \${{ runner.OS }}-pods-cache-\${{ hashFiles('**/ios/Podfile.lock') }}
+          restore-keys: |
+            \${{ runner.OS }}-pods-cache-
+
+      - name: Install npm dependencies
+        run: yarn install --frozen-lockfile
+
+      ${
+        answers.framework === 'expo'
+          ? `- name: Generate Xcode Project
+        run: npx expo prebuild -p ios`
+          : `- name: Install iOS dependencies
+        run: npx pod-install`
+      }
+      
+      - name: Install Detox CLI
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+          npm install -g detox-cli
+
+      - name: Build App for Detox
+        run: detox build -c ios.sim.release
+
+      - uses: futureware-tech/simulator-action@v2
+        with:
+          model: "iPhone 14"
+
+      - name: Run Detox
+        run: detox test -c ios.sim.release
+`;
+}
+
+module.exports = {getDetoxGitHubActionsConfig, getGitHubActionsConfig};
