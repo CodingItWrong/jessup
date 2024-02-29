@@ -743,7 +743,7 @@ function initializeNodeWithBabel(answers) {
 
 async function initializeRN(answers) {
   group('Initialize project', () => {
-    command(`npx react-native init ${answers.projectName}`);
+    command(`npx react-native@latest init ${answers.projectName}`);
     cd(answers.projectName);
     command('git init .');
   });
