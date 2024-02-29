@@ -134,7 +134,7 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 
 ## Running
 
-- Run \`yarn start\`
+- Run \`yarn web\`
 
 ## Unit Tests
 
@@ -171,7 +171,7 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 
 ## Running
 
-- Run \`yarn start\`
+- Run \`yarn web\`
 
 ## E2E Tests
 
@@ -204,7 +204,7 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 
 ## Running
 
-- Run \`yarn start\`
+- Run \`yarn web\`
 
 ## Unit Tests
 
@@ -236,7 +236,7 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 
 ## Running
 
-- Run \`yarn start\`
+- Run \`yarn web\`
 "
 `;
 
@@ -502,5 +502,115 @@ Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`np
 
 - In one terminal, run \`yarn start\`
 - In another terminal, run \`yarn android\` or \`yarn ios\`
+"
+`;
+
+exports[`getReadmeContents vite allows returning a readme with both unit testing and cypress 1`] = `
+"# My Project
+
+Describe your project here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Running
+
+- Run \`yarn dev\`
+
+## Unit Tests
+
+- Run \`yarn test\`
+
+## E2E Tests
+
+- Run the app
+- In another terminal, run \`yarn cypress\`
+"
+`;
+
+exports[`getReadmeContents vite allows returning a readme with cypress 1`] = `
+"# My Project
+
+Describe your project here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Running
+
+- Run \`yarn dev\`
+
+## E2E Tests
+
+- Run the app
+- In another terminal, run \`yarn cypress\`
+"
+`;
+
+exports[`getReadmeContents vite allows returning a readme with unit testing 1`] = `
+"# My Project
+
+Describe your project here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Running
+
+- Run \`yarn dev\`
+
+## Unit Tests
+
+- Run \`yarn test\`
+"
+`;
+
+exports[`getReadmeContents vite allows returning a readme without any testing 1`] = `
+"# My Project
+
+Describe your project here.
+
+## Requirements
+
+- [Node](https://nodejs.org)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+## Installation
+
+- Clone the repo
+- Run \`yarn install\`
+
+Dependencies are locked with \`yarn.lock\`; please use \`yarn\` rather than \`npm\` for installing.
+
+## Running
+
+- Run \`yarn dev\`
 "
 `;

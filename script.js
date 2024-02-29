@@ -42,7 +42,7 @@ function initializeCra(answers) {
     });
   });
 
-  addCypress(answers, {port: 3000});
+  addCypress(answers);
 
   group('Configure linting and formatting', () => {
     addNpmPackages({
@@ -116,7 +116,7 @@ function initializeDocusaurus(answers) {
     console.log('TODO: UNIT TESTING');
   }
 
-  addCypress(answers, {port: 3000});
+  addCypress(answers);
 
   group('Configure linting and formatting', () => {
     addNpmPackages({
@@ -353,7 +353,7 @@ async function initializeExpo(answers) {
     });
   }
 
-  addCypress(answers, {port: 19006});
+  addCypress(answers);
 
   group('Configure linting and formatting', () => {
     addNpmPackages({
@@ -461,7 +461,7 @@ function initializeNext(answers) {
     });
   }
 
-  addCypress(answers, {port: 3000});
+  addCypress(answers);
 
   group('Configure linting and formatting', () => {
     addNpmPackages({
@@ -953,7 +953,9 @@ async function initializeRN(answers) {
   writeDetoxGitHubActionsConfig(answers);
 }
 
-function addCypress(answers, {port}) {
+function addCypress(answers, {cjs}) {
+  const framework = FRAMEWORKS.find(f => f.value === answers.framework);
+
   if (answers.cypress) {
     group('Add Cypress', () => {
       addNpmPackages({
@@ -962,14 +964,14 @@ function addCypress(answers, {port}) {
       });
       setScript('cypress', 'cypress open');
       writeFile(
-        'cypress.config.js',
+        `cypress.config.${cjs ? 'c' : ''}js`,
         dedent`
           const {defineConfig} = require('cypress');
 
           module.exports = defineConfig({
             video: false,
             e2e: {
-              baseUrl: 'http://localhost:${port}',
+              baseUrl: 'http://localhost:${framework.devServerPort}',
             },
           });
         `

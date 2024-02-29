@@ -43,7 +43,7 @@ ${
   answers.framework === 'rn'
     ? `- In one terminal, run \`yarn start\`
 - In another terminal, run \`yarn android\` or \`yarn ios\``
-    : `- Run \`yarn ${answers.framework === 'next' ? 'dev' : 'start'}\``
+    : `- Run \`yarn ${framework.devServerScript ?? 'start'}\``
 }
 `
 )}${includeIf(
