@@ -6,6 +6,7 @@ A JavaScript and React project initializer. Supports the following project types
 
 - [Node](https://nodejs.org/en/), optionally including [Babel](https://babeljs.io/)
 - [Create React App](https://create-react-app.dev/)
+- React with [Vite](https://vitejs.dev/)
 - [Docusaurus](https://docusaurus.io/)
 - React Native, either via [Expo](https://expo.dev/) or React Native CLI (for info, see the [React Native Environment Setup docs](https://reactnative.dev/docs/environment-setup) and click "React Native CLI Quickstart")
 

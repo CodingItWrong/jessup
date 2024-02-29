@@ -163,6 +163,46 @@ describe('gitHubActions module', () => {
         ).toMatchSnapshot();
       });
     });
+
+    describe('vite', () => {
+      const framework = getFramework('vite');
+
+      it('can generate a config without any testing', () => {
+        expect(
+          getGitHubActionsConfig(
+            {framework: 'vite', unitTesting: false, cypress: false},
+            framework
+          )
+        ).toMatchSnapshot();
+      });
+
+      it('can generate a config with unit testing', () => {
+        expect(
+          getGitHubActionsConfig(
+            {framework: 'vite', unitTesting: true, cypress: false},
+            framework
+          )
+        ).toMatchSnapshot();
+      });
+
+      it('can generate a config with cypress', () => {
+        expect(
+          getGitHubActionsConfig(
+            {framework: 'vite', unitTesting: false, cypress: true},
+            framework
+          )
+        ).toMatchSnapshot();
+      });
+
+      it('can generate a config with both unit testing and cypress', () => {
+        expect(
+          getGitHubActionsConfig(
+            {framework: 'vite', unitTesting: true, cypress: true},
+            framework
+          )
+        ).toMatchSnapshot();
+      });
+    });
   });
 
   describe('getDetoxGitHubActionsConfig', () => {

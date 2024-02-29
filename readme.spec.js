@@ -177,4 +177,44 @@ describe('getReadmeContents', () => {
       ).toMatchSnapshot();
     });
   });
+
+  describe('vite', () => {
+    const framework = getFramework('vite');
+
+    it('allows returning a readme without any testing', () => {
+      expect(
+        getReadmeContents(
+          {framework: 'vite', unitTesting: false, detox: false},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with unit testing', () => {
+      expect(
+        getReadmeContents(
+          {framework: 'vite', unitTesting: true, detox: false},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with cypress', () => {
+      expect(
+        getReadmeContents(
+          {framework: 'vite', unitTesting: false, cypress: true},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+
+    it('allows returning a readme with both unit testing and cypress', () => {
+      expect(
+        getReadmeContents(
+          {framework: 'vite', unitTesting: true, cypress: true},
+          framework
+        )
+      ).toMatchSnapshot();
+    });
+  });
 });

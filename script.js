@@ -953,6 +953,212 @@ async function initializeRN(answers) {
   writeDetoxGitHubActionsConfig(answers);
 }
 
+function initializeVite(answers) {
+  group('Initialize project', () => {
+    command(`yarn create vite ${answers.projectName} --template react`);
+    cd(answers.projectName);
+    command('yarn install');
+    command('git init .');
+  });
+
+  group('Prevent package lock', () => {
+    command('echo "package-lock=false" >> .npmrc');
+  });
+
+  if (answers.unitTesting) {
+    group('Add Jest', () => {
+      addNpmPackages({
+        dev: true,
+        packages: [
+          '@babel/preset-env',
+          '@babel/preset-react',
+          'babel-jest',
+          'jest',
+          'jest-environment-jsdom',
+        ],
+      });
+      setScript('test', 'jest --watchAll');
+    });
+    group('Add Testing Library packages', () => {
+      addNpmPackages({
+        dev: true,
+        packages: [
+          '@testing-library/jest-dom',
+          '@testing-library/react',
+          '@testing-library/user-event',
+        ],
+      });
+      writeFile(
+        'jest-setup-after-env.js',
+        dedent`
+          import '@testing-library/jest-dom';
+        `
+      );
+      writeFile(
+        'jest.config.cjs',
+        dedent`
+          module.exports = {
+            testEnvironment: 'jest-environment-jsdom',
+            setupFilesAfterEnv: ['<rootDir>/jest-setup-after-env.js'],
+          };
+        `
+      );
+    });
+    group('Add sample RTL test', () => {
+      writeFile(
+        'src/App.spec.jsx',
+        dedent`
+          import {render, screen} from '@testing-library/react';
+          import App from './App';
+
+          describe('App', () => {
+            it('renders', () => {
+              render(<App />);
+
+              expect(screen.getByText('Vite + React')).toBeVisible();
+            });
+          });
+      `
+      );
+    });
+  }
+
+  addCypress(answers, {cjs: true});
+
+  group('Configure linting and formatting', () => {
+    addNpmPackages({
+      dev: true,
+      packages: [
+        'eslint',
+        'eslint-config-prettier',
+        'eslint-plugin-import',
+        'eslint-plugin-prettier',
+        'eslint-plugin-react',
+        'prettier',
+        ...(answers.unitTesting ? ['eslint-plugin-jest'] : []),
+        ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
+      ],
+    });
+    writeFile(
+      '.babelrc.cjs',
+      dedent`
+        module.exports = {
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                targets: {
+                  node: 'current',
+                },
+              },
+            ],
+            [
+              '@babel/preset-react',
+              {
+                runtime: "automatic",
+              },
+            ],
+          ],
+        };
+      `
+    );
+    writeFile(
+      '.eslintrc.cjs',
+      dedent`
+        module.exports = {
+          extends: [
+            'eslint:recommended',
+            'plugin:react/recommended',
+            'plugin:react/jsx-runtime',
+            'plugin:prettier/recommended',
+          ],
+          ignorePatterns: ['dist', '.eslintrc.cjs'],
+          parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+          plugins: [
+            'prettier',
+            'import',
+            ${includeIf(answers.unitTesting, "'jest',")}
+            ${includeIf(answers.cypress, "'cypress',")}
+          ],
+          env: {
+            browser: true,
+            es2020: true,
+            node: true,
+            ${includeIf(answers.unitTesting, "'jest/globals': true,")}
+            ${includeIf(answers.cypress, "'cypress/globals': true,")}
+          },
+          settings: {
+            react: {
+              version: 'detect',
+            },
+          },
+          rules: {
+            'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
+            'no-duplicate-imports': 'error',
+            'prettier/prettier': 'warn',
+            quotes: ['error', 'single', {avoidEscape: true}], // single quote unless using interpolation
+            'react/prop-types': 'off',
+            'sort-imports': [
+              'warn',
+              {ignoreDeclarationSort: true, ignoreMemberSort: false},
+            ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
+          },
+        };
+      `
+    );
+    writeFile(
+      '.prettierrc.json',
+      dedent`
+        {
+          "arrowParens": "avoid",
+          "bracketSameLine": true,
+          "bracketSpacing": false,
+          "singleQuote": true,
+          "trailingComma": "all"
+        }
+      `
+    );
+    setScript('lint', 'eslint --ext .js,.jsx .');
+  });
+
+  group('Create sample files', () => {
+    writeFile(
+      'src/App.jsx',
+      dedent`
+        export default function App() {
+          return <h1>Hello, Vite!</h1>;
+        }
+      `
+    );
+
+    if (answers.unitTesting) {
+      writeFile(
+        'src/App.spec.jsx',
+        dedent`
+          import {render, screen} from '@testing-library/react';
+          import App from './App'
+
+          describe('App', () => {
+            it('renders', () => {
+              render(<App />);
+
+              expect(screen.getByText('Hello, Vite!')).toBeVisible();
+            });
+          });
+        `
+      );
+    }
+  });
+
+  writeReadme(answers);
+
+  group('Autoformat files', () => {
+    command('yarn lint --fix');
+  });
+
+  writeGitHubActionsConfig(answers);
+}
+
 function addCypress(answers, {cjs}) {
   const framework = FRAMEWORKS.find(f => f.value === answers.framework);
 
@@ -995,7 +1201,7 @@ function addCypress(answers, {cjs}) {
           describe('starter spec', () => {
             it('shows a hello message', () => {
               cy.visit('/');
-              cy.contains('Hello, React Native!');
+              cy.contains('Hello, Vite!');
             });
           });
         `
@@ -1194,6 +1400,16 @@ const FRAMEWORKS = [
     initializer: initializeRN,
     defaultProjectName: 'MyRNApp',
     detoxAvailable: true,
+  },
+  {
+    value: 'vite',
+    name: 'React with Vite',
+    devServerScript: 'dev',
+    ciDevServerScript: 'dev --host',
+    devServerPort: 5173,
+    initializer: initializeVite,
+    defaultProjectName: 'my-react-app',
+    cypressAvailable: true,
   },
 ];
 

@@ -54,7 +54,9 @@ ${includeIf(
       - name: Cypress Tests
         uses: cypress-io/github-action@v4
         with:
-          start: yarn ${framework.devServerScript ?? 'start'}
+          start: yarn ${
+            framework.ciDevServerScript ?? framework.devServerScript ?? 'start'
+          }
           wait-on: 'http://localhost:${framework.devServerPort}'
 `
   )}`;
@@ -98,7 +100,7 @@ jobs:
           : `- name: Install iOS dependencies
         run: npx pod-install`
       }
-      
+
       - name: Install Detox CLI
         run: |
           brew tap wix/brew
