@@ -802,6 +802,15 @@ async function initializeRN(answers) {
       command('detox init -r jest');
     });
     await groupAsync('Configure Detox', async () => {
+      writeFile(
+        'jest.config.js',
+        dedent`
+        module.exports = {
+          preset: 'react-native',
+          modulePathIgnorePatterns: ['e2e'],
+        };
+        `
+      );
       await modifyJson(
         'package.json',
         '.jest.modulePathIgnorePatterns = ["e2e"]'
