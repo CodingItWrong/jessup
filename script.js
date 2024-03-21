@@ -1031,8 +1031,6 @@ function initializeVite(answers) {
       packages: [
         'eslint',
         'eslint-config-prettier',
-        'eslint-plugin-import',
-        'eslint-plugin-prettier',
         'eslint-plugin-react',
         'prettier',
         ...(answers.unitTesting ? ['eslint-plugin-jest'] : []),
@@ -1070,12 +1068,11 @@ function initializeVite(answers) {
             'eslint:recommended',
             'plugin:react/recommended',
             'plugin:react/jsx-runtime',
-            'plugin:prettier/recommended',
+            'prettier',
           ],
           ignorePatterns: ['dist', '.eslintrc.cjs'],
           parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
           plugins: [
-            'prettier',
             'import',
             ${includeIf(answers.unitTesting, "'jest',")}
             ${includeIf(answers.cypress, "'cypress',")}
@@ -1093,15 +1090,8 @@ function initializeVite(answers) {
             },
           },
           rules: {
-            'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
             'no-duplicate-imports': 'error',
-            'prettier/prettier': 'warn',
-            quotes: ['error', 'single', {avoidEscape: true}], // single quote unless using interpolation
             'react/prop-types': 'off',
-            'sort-imports': [
-              'warn',
-              {ignoreDeclarationSort: true, ignoreMemberSort: false},
-            ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
           },
         };
       `
@@ -1118,10 +1108,16 @@ function initializeVite(answers) {
         }
       `
     );
-    setScript('lint', 'eslint --ext .js,.jsx .');
+    setScript('format', 'npx prettier src --write');
+    setScript('lint:format', 'npx prettier src --check');
+    setScript('lint:eslint', 'eslint --ext .js,.jsx  --max-warnings=0');
+    setScript('lint', 'npm run lint:eslint && npm run lint:format');
   });
 
   group('Create sample files', () => {
+    command('rm src/App.css');
+    writeFile('src/index.css', '');
+
     writeFile(
       'src/App.jsx',
       dedent`
@@ -1153,7 +1149,7 @@ function initializeVite(answers) {
   writeReadme(answers);
 
   group('Autoformat files', () => {
-    command('yarn lint --fix');
+    command('yarn format');
   });
 
   writeGitHubActionsConfig(answers);
