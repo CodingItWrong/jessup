@@ -48,8 +48,6 @@ function initializeDocusaurus(answers) {
         '@babel/eslint-parser',
         'eslint',
         'eslint-config-prettier',
-        'eslint-plugin-import',
-        'eslint-plugin-prettier',
         'eslint-plugin-react',
         'prettier',
         ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
@@ -62,13 +60,10 @@ function initializeDocusaurus(answers) {
           extends: [
             'eslint:recommended',
             'plugin:react/recommended',
+            'plugin:react/jsx-runtime',
             'prettier',
           ],
-          plugins: [
-            'prettier',
-            'import',
-            ${includeIf(answers.cypress, "'cypress',")}
-          ],
+          ${includeIf(answers.cypress, "plugins: ['cypress'],")}
           parser: '@babel/eslint-parser',
           env: {
             browser: true,
@@ -82,27 +77,23 @@ function initializeDocusaurus(answers) {
             },
           },
           rules: {
-            'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
             'no-duplicate-imports': 'error',
-            'prettier/prettier': 'warn',
-            quotes: ['error', 'single', {avoidEscape: true}], // single quote unless using interpolation
             'react/prop-types': 'off',
-            'sort-imports': [
-              'warn',
-              {ignoreDeclarationSort: true, ignoreMemberSort: false},
-            ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
           },
         };
       `
     );
     writePrettierConfig();
-    setScript('lint', 'eslint .');
+    setScript('format', 'npx prettier . --write');
+    setScript('lint:format', 'npx prettier . --check');
+    setScript('lint:eslint', 'eslint . --max-warnings=0');
+    setScript('lint', 'npm run lint:eslint && npm run lint:format');
   });
 
   writeReadme(answers);
 
   group('Autoformat files', () => {
-    command('yarn lint --fix');
+    command('yarn format');
   });
 
   writeGitHubActionsConfig(answers);
@@ -1077,7 +1068,7 @@ function initializeVite(answers) {
   writeGitHubActionsConfig(answers);
 }
 
-function addCypress(answers, {cjs}) {
+function addCypress(answers, {cjs} = {}) {
   const framework = FRAMEWORKS.find(f => f.value === answers.framework);
 
   if (answers.cypress) {
