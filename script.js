@@ -466,7 +466,6 @@ function initializeNode(answers) {
       packages: [
         'eslint',
         'eslint-config-prettier',
-        'eslint-plugin-prettier',
         'prettier',
         ...(answers.unitTesting ? ['eslint-plugin-jest'] : []),
       ],
@@ -475,7 +474,7 @@ function initializeNode(answers) {
       '.eslintrc.js',
       dedent`
         module.exports = {
-          extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+          extends: ['eslint:recommended', 'prettier'],
           ${answers.unitTesting ? "plugins: ['jest']," : ''}
           env: {
             es6: true,
@@ -485,14 +484,14 @@ function initializeNode(answers) {
           parserOptions: {
             ecmaVersion: 'latest',
           },
-          rules: {
-            quotes: ['error', 'single', {avoidEscape: true}], // single quote unless using interpolation
-          },
         };
       `
     );
     writePrettierConfig({trailingComma: 'es5'});
-    setScript('lint', 'eslint .');
+    setScript('format', 'npx prettier . --write');
+    setScript('lint:format', 'npx prettier . --check');
+    setScript('lint:eslint', 'eslint .  --max-warnings=0');
+    setScript('lint', 'npm run lint:eslint && npm run lint:format');
   });
 
   group('Create sample files', () => {
@@ -523,7 +522,7 @@ function initializeNode(answers) {
   writeReadme(answers);
 
   group('Autoformat files', () => {
-    command('yarn lint --fix');
+    command('yarn format');
   });
 
   writeGitHubActionsConfig(answers);
