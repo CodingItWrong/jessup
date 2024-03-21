@@ -21,84 +21,6 @@ function frameworkForAnswers(answers) {
   return FRAMEWORKS.find(f => f.value === answers.framework);
 }
 
-function initializeCra(answers) {
-  group(
-    'Initialize project',
-    () => {
-      command(`yarn create react-app ${answers.projectName}`);
-      cd(answers.projectName);
-    },
-    {commit: false}
-  );
-
-  group('Prevent package lock', () => {
-    command('echo "package-lock=false" >> .npmrc');
-  });
-
-  group('Update User Event library', () => {
-    addNpmPackages({
-      dev: true,
-      packages: ['@testing-library/user-event'],
-    });
-  });
-
-  addCypress(answers);
-
-  group('Configure linting and formatting', () => {
-    addNpmPackages({
-      dev: true,
-      packages: [
-        'eslint-config-prettier',
-        'eslint-plugin-prettier',
-        'prettier',
-        ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
-      ],
-    });
-    writeFile(
-      '.eslintrc.js',
-      dedent`
-        module.exports = {
-          extends: ['react-app', 'prettier'],
-          plugins: [
-            'prettier',
-            ${includeIf(answers.cypress, "'cypress',")}
-          ],
-          ${includeIf(answers.cypress, "env: {'cypress/globals': true},")}
-          rules: {
-            'import/order': ['warn', {alphabetize: {order: 'asc'}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
-            'no-duplicate-imports': 'error',
-            'prettier/prettier': 'warn',
-            quotes: ['error', 'single', {avoidEscape: true}], // single quote unless using interpolation
-            'sort-imports': [
-              'warn',
-              {ignoreDeclarationSort: true, ignoreMemberSort: false},
-            ], // alphabetize named imports - https://eslint.org/docs/rules/sort-imports
-          },
-          overrides: [
-            {
-              files: ['src/**/*.spec.js'],
-              extends: ['react-app/jest'],
-            },
-          ],
-        };
-      `
-    );
-    writePrettierConfig();
-    setScript('lint', 'eslint .');
-    setScript('start', 'EXTEND_ESLINT=true react-scripts start');
-    setScript('build', 'EXTEND_ESLINT=true react-scripts build');
-    setScript('test', 'EXTEND_ESLINT=true react-scripts test');
-  });
-
-  writeReadme(answers);
-
-  group('Autoformat files', () => {
-    command('yarn lint --fix');
-  });
-
-  writeGitHubActionsConfig(answers);
-}
-
 function initializeDocusaurus(answers) {
   group('Initialize project', () => {
     command(
@@ -1344,15 +1266,6 @@ function writeSampleReactNativeFiles(answers) {
 }
 
 const FRAMEWORKS = [
-  {
-    value: 'cra',
-    name: 'Create React App',
-    alwaysIncludeUnitTesting: true,
-    skipUnitTestingQuestion: true,
-    cypressAvailable: true,
-    devServerPort: 3000,
-    initializer: initializeCra,
-  },
   {
     value: 'doc',
     name: 'Docusaurus',

@@ -10,22 +10,6 @@ describe('gitHubActions module', () => {
       return FRAMEWORKS.find(f => f.value === value);
     }
 
-    describe('cra', () => {
-      const framework = getFramework('cra');
-
-      it('can generate a config without cypress', () => {
-        expect(
-          getGitHubActionsConfig({framework: 'cra', cypress: false}, framework)
-        ).toMatchSnapshot();
-      });
-
-      it('can generate a config with cypress', () => {
-        expect(
-          getGitHubActionsConfig({framework: 'cra', cypress: true}, framework)
-        ).toMatchSnapshot();
-      });
-    });
-
     describe('docusaurus', () => {
       const framework = getFramework('doc');
 

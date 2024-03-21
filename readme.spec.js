@@ -6,22 +6,6 @@ describe('getReadmeContents', () => {
     return FRAMEWORKS.find(f => f.value === value);
   }
 
-  describe('cra', () => {
-    const framework = getFramework('cra');
-
-    it('allows returning a readme without cypress', () => {
-      expect(
-        getReadmeContents({framework: 'cra', cypress: false}, framework)
-      ).toMatchSnapshot();
-    });
-
-    it('allows returning a readme with cypress', () => {
-      expect(
-        getReadmeContents({framework: 'cra', cypress: true}, framework)
-      ).toMatchSnapshot();
-    });
-  });
-
   describe('docusaurus', () => {
     const framework = getFramework('doc');
 
