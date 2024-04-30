@@ -930,10 +930,10 @@ function initializeVite(answers) {
   addCypress(answers, {cjs: true});
 
   group('Configure linting and formatting', () => {
+    command('yarn add --dev "eslint@^8"'); // temporarily get working with eslint 8, until can update for 9 and confirm it all works
     addNpmPackages({
       dev: true,
       packages: [
-        'eslint',
         'eslint-config-prettier',
         'eslint-plugin-react',
         'prettier',
