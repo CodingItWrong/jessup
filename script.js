@@ -305,7 +305,9 @@ function initializeNext(answers) {
   group(
     'Initialize project',
     () => {
-      command(`yarn create next-app ${answers.projectName}`);
+      command(
+        `yarn create next-app ${answers.projectName} --app --eslint --js`
+      );
       cd(answers.projectName);
     },
     {commit: false}
