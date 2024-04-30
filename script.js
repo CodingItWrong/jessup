@@ -655,26 +655,6 @@ async function initializeRN(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
-  group('Remove need for React import', () => {
-    // https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html#manual-babel-setup
-    // https://aryan-mittal.medium.com/enable-the-new-jsx-transform-in-react-native-0-64-aea4f686a640
-    writeFile(
-      './.babel.config.js',
-      dedent`
-        module.exports = {
-          presets: ['module:metro-react-native-babel-preset'],
-          plugins: [
-            [
-              '@babel/plugin-transform-react-jsx',
-              {
-                runtime: 'automatic',
-              },
-            ],
-          ],
-        };
-      `
-    );
-  });
 
   if (answers.unitTesting) {
     await groupAsync('Add RNTL and jest-native', async () => {
