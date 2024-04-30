@@ -1104,7 +1104,7 @@ function writeReactNativeEslintConfig(answers) {
     dedent`
       module.exports = {
         root: true,
-        extends: ['@react-native-community'],
+        extends: '@react-native',
         plugins: [
           'import',
           ${includeIf(answers.detox, "'detox',")}
