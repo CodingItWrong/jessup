@@ -665,6 +665,7 @@ async function initializeRN(answers) {
           '@testing-library/react-native',
         ],
       });
+      command('npx pod-install');
       writeFile(
         'jest-setup-after-env.js',
         dedent`
