@@ -676,7 +676,6 @@ async function initializeRN(answers) {
           '@testing-library/react-native',
         ],
       });
-      command('npx pod-install');
       writeFile(
         'jest-setup-after-env.js',
         dedent`
@@ -828,6 +827,12 @@ async function initializeRN(answers) {
   writeGitHubActionsConfig(answers);
 
   writeDetoxGitHubActionsConfig(answers);
+
+  // TODO: find out why this is needed
+  // If this doesn't work, it seems to manually, so then it's a problem of how it's run
+  group('Final pod install', () => {
+    command('cd ios && pod install');
+  });
 }
 
 function initializeVite(answers) {
