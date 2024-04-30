@@ -810,6 +810,8 @@ async function initializeRN(answers) {
       dev: true,
       packages: [
         'eslint-plugin-import',
+        'eslint-plugin-prettier@^5',
+        'prettier@^3',
         ...(answers.detox ? ['eslint-plugin-detox'] : []),
       ],
     });
