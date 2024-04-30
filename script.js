@@ -663,13 +663,12 @@ async function initializeRN(answers) {
         packages: [
           'eslint-plugin-testing-library',
           '@testing-library/react-native',
-          '@testing-library/jest-native',
         ],
       });
       writeFile(
         'jest-setup-after-env.js',
         dedent`
-          import '@testing-library/jest-native/extend-expect';
+          import '@testing-library/react-native/extend-expect';
         `
       );
       await modifyJson(
