@@ -668,7 +668,7 @@ async function initializeRN(answers) {
   );
 
   if (answers.unitTesting) {
-    await groupAsync('Add RNTL and jest-native', async () => {
+    await groupAsync('Add RNTL', async () => {
       addNpmPackages({
         dev: true,
         packages: [
