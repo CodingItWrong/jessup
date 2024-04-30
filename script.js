@@ -655,6 +655,17 @@ async function initializeRN(answers) {
     command('echo "package-lock=false" >> .npmrc');
   });
 
+  // TODO: conditional writing of this config file
+  writeFile(
+    'jest.config.js',
+    dedent`
+      module.exports = {
+        preset: 'react-native',
+        setupFilesAfterEnv: ["./jest-setup-after-env.js"],
+        modulePathIgnorePatterns: ['e2e'],
+      };
+    `
+  );
 
   if (answers.unitTesting) {
     await groupAsync('Add RNTL and jest-native', async () => {
@@ -672,10 +683,6 @@ async function initializeRN(answers) {
           import '@testing-library/react-native/extend-expect';
         `
       );
-      await modifyJson(
-        'package.json',
-        '.jest.setupFilesAfterEnv = ["./jest-setup-after-env.js"]'
-      );
     });
   }
 
@@ -685,19 +692,6 @@ async function initializeRN(answers) {
       command('detox init -r jest');
     });
     await groupAsync('Configure Detox', async () => {
-      writeFile(
-        'jest.config.js',
-        dedent`
-        module.exports = {
-          preset: 'react-native',
-          modulePathIgnorePatterns: ['e2e'],
-        };
-        `
-      );
-      await modifyJson(
-        'package.json',
-        '.jest.modulePathIgnorePatterns = ["e2e"]'
-      );
       writeFile(
         '.detoxrc.js',
         dedent`
