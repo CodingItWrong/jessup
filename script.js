@@ -124,24 +124,29 @@ async function initializeExpo(answers) {
       setScript('test', 'jest --watchAll');
     });
 
-    await groupAsync('Add RNTL and jest-native', async () => {
+    await groupAsync('Add RNTL', async () => {
       addNpmPackages({
         dev: true,
         packages: [
           'eslint-plugin-testing-library',
           '@testing-library/react-native',
-          '@testing-library/jest-native',
         ],
       });
       writeFile(
         'jest-setup-after-env.js',
         dedent`
-          import '@testing-library/jest-native/extend-expect';
+          import '@testing-library/react-native/extend-expect';
         `
       );
-      await modifyJson(
-        'package.json',
-        '.jest = {"preset": "jest-expo", "modulePathIgnorePatterns": ["cypress"], "setupFilesAfterEnv": ["./jest-setup-after-env.js"]}'
+      writeFile(
+        'jest.config.js',
+        dedent`
+          module.exports = {
+            preset: 'react-native',
+            setupFilesAfterEnv: ["./jest-setup-after-env.js"],
+            modulePathIgnorePatterns: ['cypress', 'e2e'],
+          };
+        `
       );
     });
   }
