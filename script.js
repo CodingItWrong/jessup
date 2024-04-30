@@ -1247,7 +1247,7 @@ const FRAMEWORKS = [
     name: 'Expo',
     cypressAvailable: true,
     devServerScript: 'web',
-    devServerPort: 19006,
+    devServerPort: 8081,
     initializer: initializeExpo,
     detoxAvailable: true,
   },
