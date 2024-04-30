@@ -277,10 +277,11 @@ async function initializeExpo(answers) {
     addNpmPackages({
       dev: true,
       packages: [
-        '@react-native-community/eslint-config',
-        'eslint',
+        '@react-native/eslint-config',
+        'eslint@8^',
         'eslint-plugin-import',
-        'prettier',
+        'eslint-plugin-prettier@^5',
+        'prettier@^3',
         ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
         ...(answers.detox ? ['eslint-plugin-detox'] : []),
       ],
