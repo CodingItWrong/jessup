@@ -359,16 +359,16 @@ function initializeNext(answers) {
     });
     group('Add sample RTL test', () => {
       writeFile(
-        'pages/index.spec.js',
+        'app/page.spec.js',
         dedent`
           import {render, screen} from '@testing-library/react';
-          import Home from './index'
+          import Home from './page'
 
           describe('Home', () => {
             it('renders', () => {
               render(<Home />);
 
-              expect(screen.getByText('Next.js!')).toBeInTheDocument();
+              expect(screen.getByText('app/page.js')).toBeInTheDocument();
             });
           });
       `
