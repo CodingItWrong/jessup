@@ -648,11 +648,8 @@ function initializeNodeWithBabel(answers) {
 }
 
 async function initializeRN(answers) {
-  group('Initialize project', () => {
-    command(`npx react-native@latest init ${answers.projectName}`);
-    cd(answers.projectName);
-    command('git init .');
-  });
+  command(`npx react-native@latest init ${answers.projectName} --install-pods`);
+  cd(answers.projectName);
 
   group('Prevent package lock', () => {
     command('echo "package-lock=false" >> .npmrc');
