@@ -389,7 +389,6 @@ function initializeNext(answers) {
       dev: true,
       packages: [
         'eslint-config-prettier',
-        'eslint-plugin-prettier',
         'prettier',
         ...(answers.unitTesting ? ['eslint-plugin-jest'] : []),
         ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
@@ -404,15 +403,11 @@ function initializeNext(answers) {
             "next/core-web-vitals",
             "prettier"
           ],
-          "plugins": [
-            "prettier"
-            ${includeIf(answers.cypress, ',"cypress"')}
-          ],
+          ${includeIf(answers.cypress, '"plugins": ["cypress"],')}
           ${includeIf(answers.cypress, '"env": {"cypress/globals": true},')}
           "rules": {
             "import/order": ["warn", {"alphabetize": {"order": "asc"}}], // group and then alphabetize lines - https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/order.md
             "no-duplicate-imports": "error",
-            "prettier/prettier": "warn",
             "sort-imports": [
               "warn",
               {"ignoreDeclarationSort": true, "ignoreMemberSort": false}
@@ -434,12 +429,18 @@ function initializeNext(answers) {
       `
     );
     writePrettierConfig();
+
+    setScript('format', 'npx prettier app --write');
+    setScript('lint:format', 'npx prettier app --check');
+    setScript('lint:eslint', 'next lint');
+    setScript('lint', 'npm run lint:eslint && npm run lint:format');
   });
 
   writeReadme(answers);
 
   group('Autoformat files', () => {
-    command('yarn lint --fix');
+    command('yarn format');
+    command('yarn lint:eslint --fix');
   });
 
   writeGitHubActionsConfig(answers);
