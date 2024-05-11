@@ -278,7 +278,7 @@ async function initializeExpo(answers) {
       dev: true,
       packages: [
         '@react-native/eslint-config',
-        'eslint@8^',
+        'eslint@8.57.0', // specific version to avoid version prompt
         'eslint-plugin-import',
         'eslint-plugin-prettier@^5',
         'prettier@^3',
