@@ -14,13 +14,13 @@ jobs:
     name: Test
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: yarn-cache
         with:
           path: \${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -75,7 +75,7 @@ jobs:
   test:
     runs-on: macos-12
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v3
         with:
@@ -83,7 +83,7 @@ jobs:
           cache: "yarn"
 
       - name: Cache Pods dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ios/Pods
           key: \${{ runner.OS }}-pods-cache-\${{ hashFiles('**/ios/Podfile.lock') }}
