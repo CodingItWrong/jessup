@@ -920,9 +920,14 @@ function initializeVite(answers) {
     addNpmPackages({
       dev: true,
       packages: [
+        '@babel/eslint-parser',
+        '@babel/preset-env',
+        '@babel/preset-react',
         'eslint@^8',
         'eslint-config-prettier',
+        'eslint-plugin-import',
         'eslint-plugin-react',
+        'eslint-plugin-react-hooks',
         'prettier',
         ...(answers.unitTesting ? ['eslint-plugin-jest'] : []),
         ...(answers.cypress ? ['eslint-plugin-cypress'] : []),
@@ -958,10 +963,12 @@ function initializeVite(answers) {
           extends: [
             'eslint:recommended',
             'plugin:react/recommended',
+            'plugin:react-hooks/recommended',
             'plugin:react/jsx-runtime',
             'prettier',
           ],
           ignorePatterns: ['dist', '.eslintrc.cjs'],
+          parser: '@babel/eslint-parser',
           parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
           plugins: [
             'import',
